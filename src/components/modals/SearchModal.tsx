@@ -2,30 +2,29 @@ import React, { useRef, useState } from "react";
 import { useHistory } from "react-router";
 
 interface Props {
+	path: string;
 	open: boolean;
 	setOpen: (state: boolean) => void;
 }
 
-const SearchModal = ({ open, setOpen }: Props) => {
+const SearchModal = ({ path, open, setOpen }: Props) => {
 	const [loading, setLoading] = useState(false);
 
 	const valueRef = useRef<HTMLInputElement>(null);
 	const history = useHistory();
 	const handleSearch = async () => {
 		setLoading(true);
-		history.push(`/drinks?value=${valueRef.current?.value}`);
+		history.push(`${path}?value=${valueRef.current?.value}`);
 		setLoading(false);
 		setOpen(false);
 	};
 
+	const handleClose = () => {
+		setOpen(false);
+	};
 	return (
 		<div className={`modal ${open && "modal-open"} transition-all`}>
-			<span
-				className="absolute w-full h-full"
-				onClick={() => {
-					setOpen(false);
-				}}
-			></span>
+			<span className="absolute w-full h-full" onClick={handleClose}></span>
 
 			<div className="modal-box">
 				<div className="card-body">

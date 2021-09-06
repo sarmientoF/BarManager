@@ -5,33 +5,22 @@ import SearchModal from "../components/modals/SearchModal";
 import UserItem from "../components/user/UserItem";
 import { useQuery } from "./drinks/DrinksPage";
 import { BsSearch } from "react-icons/bs";
+import OrderItem from "../components/order/OrderItem";
+import { Order, UserState } from "../features/user/user-slice";
 
 interface Props {}
 
-const AllUsersPage = (props: Props) => {
+const AllOrdersPage = (props: Props) => {
 	let query = useQuery();
-	const filterName = query.get("value");
-	const filterQR = query.get("qr");
-	console.log("🚀 value", filterName);
+	const filterName = query.get("value") || "";
 
-	let customers = useAppSelector((state) => state.user.customers);
+	let orders = useAppSelector((state) => state.user.orders);
 
-	if (filterName) {
-		customers = customers.filter((customer) =>
-			customer.attributes.name.toLowerCase().includes(filterName.toLowerCase())
-		);
-	}
-
-	if (filterQR) {
-		customers = customers.filter((customer) => customer.uid == filterQR);
-	}
-
-	// const customers = useAppSelector((state) => state.user.customers);
 	const [search, setSearch] = useState(false);
 
 	return (
 		<PrivateContainer>
-			<SearchModal path={"/all"} open={search} setOpen={setSearch} />
+			<SearchModal path={"/orders"} open={search} setOpen={setSearch} />
 
 			<div className="fixed bottom-4 right-4 z-10">
 				<button
@@ -46,9 +35,9 @@ const AllUsersPage = (props: Props) => {
 			<div className="hero min-h-screen bg-base-200">
 				<div className="text-center hero-content">
 					<div className="">
-						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 place-content-center ">
-							{customers.map((customer) => (
-								<UserItem key={customer.uid} user={customer} />
+						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 place-content-center ">
+							{orders.map((order) => (
+								<OrderItem filter={filterName} order={order} />
 							))}
 						</div>
 					</div>
@@ -58,4 +47,4 @@ const AllUsersPage = (props: Props) => {
 	);
 };
 
-export default AllUsersPage;
+export default AllOrdersPage;

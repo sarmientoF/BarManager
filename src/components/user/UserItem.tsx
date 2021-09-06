@@ -8,13 +8,18 @@ import UpdateModal from "../modals/UpdateModal";
 import { updateDoc } from "@firebase/firestore";
 import { database } from "../../firebase";
 import { doc } from "firebase/firestore";
-
+import AddOrderModal from "../modals/AddOrderModal";
+import { useAppSelector } from "../../app/hooks";
+import { MdInfoOutline } from "react-icons/md";
 interface Props {
 	user: UserState;
 }
 
 const UserItem = ({ user }: Props) => {
+	const drinks = useAppSelector((state) => state.user.drinks);
+
 	const uid = user.uid;
+	console.log("🚨 user ", user);
 
 	let svg = createAvatar(style, {
 		seed: user.attributes.name,
@@ -23,6 +28,8 @@ const UserItem = ({ user }: Props) => {
 
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const [order, setOrder] = useState(false);
+
 	const createdAt = new Date(user.createdAt);
 	const updatedAt = new Date(user.updatedAt);
 
@@ -37,8 +44,14 @@ const UserItem = ({ user }: Props) => {
 		setLoading(false);
 	};
 
+	const handleAddOrder = () => {
+		setOrder(true);
+	};
+
 	return (
 		<>
+			{true && <AddOrderModal user={user} open={order} setOpen={setOrder} />}
+
 			<UpdateModal user={user} open={open} setOpen={setOpen} />
 			<div className="card bordered text-left bg-base-100 shadow-lg">
 				<figure className="relative inline-flex">
@@ -64,16 +77,10 @@ const UserItem = ({ user }: Props) => {
 				</figure>
 
 				<div className="card-body">
-					<h2 className="card-title">
-						{user.attributes.name || "No name yet"}
-						{isNew && <div className="badge mx-2 bg-green-400">NEW</div>}
-					</h2>
-					<p className="overflow-ellipsis overflow-hidden">
-						Lorem ipsum dolor, sit amet consectetur adipisicing elit. Nesciunt
-						incidunt nobis molestias dolorem consequuntur laudantium?
-					</p>
-					<div className="card-actions">
-						<button className="btn btn-accent">Add order</button>
+					<div className="card-actions -mx-0.5">
+						<button onClick={handleAddOrder} className="btn btn-accent">
+							Add order
+						</button>
 
 						{user.attributes.isInStore ? (
 							<button
@@ -92,6 +99,31 @@ const UserItem = ({ user }: Props) => {
 								Enter
 							</button>
 						)}
+					</div>
+					<div tabIndex={0} className="collapse -mx-3.5">
+						<div className="collapse-title flex text-xl font-medium overflow-hidden">
+							<div className="max-w-[80%] overflow-hidden line-clamp-1 ">
+								{user.attributes.name}
+							</div>
+							{isNew && <div className="badge ml-2 bg-green-400">NEW</div>}
+							<MdInfoOutline className="inline-flex ml-2 fill-current text-green-500 " />
+						</div>
+						<div className="collapse-content">
+							<ul className="list-inside list-disc">
+								{user.relationships?.orders?.map((order) => {
+									console.log("🚀🚀🚀🚀", order);
+
+									const drink = drinks.find(
+										(drink) => drink.uid == order.drinkId
+									);
+									return (
+										<li key={order.orderId}>
+											{order.drinkCode} {drink?.attributes.name}
+										</li>
+									);
+								})}
+							</ul>
+						</div>
 					</div>
 				</div>
 			</div>

@@ -2,6 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.filepond--credits{
-    display: none;
+.filepond--credits {
+	display: none;
 }

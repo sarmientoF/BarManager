@@ -19,6 +19,8 @@ import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orien
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
+import AllOrdersPage from "./pages/AllOrdersPage";
+import QRPage from "./pages/QRPage";
 registerPlugin(
 	FilePondPluginImageExifOrientation,
 	FilePondPluginImagePreview,
@@ -52,6 +54,13 @@ function App() {
 			</PrivateRoute>
 			<PrivateRoute path="/drinks">
 				<DrinksPage />
+			</PrivateRoute>
+			<PrivateRoute path="/qr">
+				<QRPage />
+			</PrivateRoute>
+
+			<PrivateRoute path="/orders">
+				<AllOrdersPage />
 			</PrivateRoute>
 
 			<Route path="/signin">

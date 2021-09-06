@@ -28,6 +28,7 @@ export const db = getFirestore();
 export const database = {
 	users: collection(db, "users"),
 	drinks: collection(db, "drinks"),
+	orders: collection(db, "orders"),
 	folders: collection(db, "folders"),
 	admins: collection(db, "admins"),
 	employees: collection(db, "employees"),

@@ -13,11 +13,17 @@ import {
 import React, { FC, useContext, useEffect } from "react";
 import { useState } from "react";
 import { useAppDisptach } from "../app/hooks";
-import { UserState, watchDrinks, watchUsers } from "../features/user/user-slice";
+import {
+	UserState,
+	watchDrinks,
+	watchOrders,
+	watchUsers,
+} from "../features/user/user-slice";
 import { auth, database, db } from "../firebase";
 import { watchUser } from "../features/user/user-slice";
 import { userConverter, UserData } from "./DataConverter";
 import { drinkConverter, DrinkData } from "./DrinkConverter";
+import { orderConverter, OrderData } from "./OrderConverter";
 
 const AuthCotnext = React.createContext({
 	currentUser: null as User | null,
@@ -142,9 +148,19 @@ export const AuthProvider: FC<Props> = (props) => {
 					drinks.push(doc.data());
 				});
 
-				console.log("Drinks", drinks);
-
 				dispatch(watchDrinks(drinks as any));
+			});
+
+			const ordersQuery = query(collection(db, "orders")).withConverter(
+				orderConverter
+			);
+			onSnapshot(ordersQuery, (querySnapshot) => {
+				const orders: OrderData[] = [];
+				querySnapshot.forEach((doc) => {
+					orders.push({ ...doc.data(), uid: doc.id });
+				});
+
+				dispatch(watchOrders(orders as any));
 			});
 		}
 	}, [currentUser]);

@@ -10,21 +10,43 @@ interface Attributes {
 	isInStore: boolean;
 }
 
+export interface Order {
+	drinkCode: string;
+	drinkId: string;
+	orderId: string;
+}
+
+interface Relationships {
+	orders?: Order[];
+}
 interface DrinkAttributes {
 	name: string;
 	memo?: string;
 	url: string;
 }
+interface OrderAttributes {
+	drinkId: string;
+	drinkCode: string;
+	userId: string;
+}
 export interface UserState {
 	uid: string;
 	attributes: Attributes;
+	relationships?: Relationships;
 	createdAt: string;
 	updatedAt: string;
 }
 
 export interface DrinkState {
-	uid: string;
 	attributes: DrinkAttributes;
+	createdAt: string;
+	updatedAt: string;
+	uid: string;
+}
+
+export interface OrderState {
+	uid: string;
+	attributes: OrderAttributes;
 	createdAt: string;
 	updatedAt: string;
 }
@@ -32,6 +54,7 @@ interface AdminState {
 	user: UserState;
 	customers: UserState[];
 	drinks: DrinkState[];
+	orders: OrderState[];
 }
 
 const UserAttributes: Attributes = {
@@ -45,6 +68,7 @@ const initialState: AdminState = {
 	user: { uid: "", attributes: UserAttributes, createdAt: "", updatedAt: "" },
 	customers: [],
 	drinks: [],
+	orders: [],
 };
 
 const userSlice = createSlice({
@@ -65,8 +89,13 @@ const userSlice = createSlice({
 			let data = action.payload;
 			state.drinks = data;
 		},
+		watchOrders(state, action: PayloadAction<any>) {
+			let data = action.payload;
+			state.orders = data;
+		},
 	},
 });
 
-export const { watchUser, watchUsers, watchDrinks } = userSlice.actions;
+export const { watchUser, watchUsers, watchDrinks, watchOrders } =
+	userSlice.actions;
 export default userSlice.reducer;

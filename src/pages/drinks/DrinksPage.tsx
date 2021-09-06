@@ -2,15 +2,13 @@ import React, { useState } from "react";
 import { useAppSelector } from "../../app/hooks";
 import PrivateContainer from "../../components/common/PrivateContainer";
 import DrinkModal from "../../components/modals/DrinkModal";
-import UserItem from "../../components/user/UserItem";
 import { IoMdAdd } from "react-icons/io";
-import { useStore } from "react-redux";
 import DrinkItem from "../../components/drink/Drinkitem";
 import { BsSearch } from "react-icons/bs";
 import SearchModal from "../../components/modals/SearchModal";
 import { useLocation } from "react-router";
 
-function useQuery() {
+export function useQuery() {
 	return new URLSearchParams(useLocation().search);
 }
 
@@ -19,23 +17,20 @@ interface Props {}
 const DrinksPage = (props: Props) => {
 	let query = useQuery();
 	const filterName = query.get("value");
-	console.log("🚀 value", filterName);
-
 	let drinks = useAppSelector((state) => state.user.drinks);
 
 	if (filterName) {
 		drinks = drinks.filter((drink) =>
-			drink.attributes.name
-				.toLowerCase()
-				.includes(filterName.toLowerCase())
+			drink.attributes.name.toLowerCase().includes(filterName.toLowerCase())
 		);
 	}
 	const [open, setOpen] = useState(false);
 	const [search, setSearch] = useState(false);
+
 	return (
 		<PrivateContainer>
 			<DrinkModal open={open} setOpen={setOpen} />
-			<SearchModal open={search} setOpen={setSearch} />
+			<SearchModal path={"/drinks"} open={search} setOpen={setSearch} />
 			<div className="fixed bottom-4 right-4 z-10">
 				<button
 					onClick={() => {

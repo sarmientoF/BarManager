@@ -40,12 +40,8 @@ const SignInPage = (props: Props) => {
 		>
 			<div className="flex-col justify-center hero-content lg:flex-row">
 				<div className="text-center lg:text-left">
-					<h1 className="mb-5 text-5xl font-bold">Hello there</h1>
-					<p className="mb-5">
-						Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda
-						excepturi exercitationem quasi. In deleniti eaque aut repudiandae et
-						a id nisi.
-					</p>
+					<h1 className="mb-5 text-5xl font-bold">バーの名前</h1>
+					<p className="mb-5 flex-grow" >ここはバーの情報を載せます。</p>
 				</div>
 				<div className="card flex-shrink-0 w-full max-w-sm  bg-base-100  shadow-2xl filter drop-shadow-2xl ">
 					<form className="card-body" onSubmit={handleSignIn}>

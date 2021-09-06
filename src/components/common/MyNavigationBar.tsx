@@ -20,10 +20,6 @@ const MyNavigationBar: FC<Props> = (props) => {
 			</div>
 			<div className="hidden px-2 mx-2 navbar-center lg:flex">
 				<div className="flex items-stretch">
-					<Link className="btn btn-ghost btn-sm rounded-btn" to="/">
-						Home
-					</Link>
-
 					<Link className="btn btn-ghost btn-sm rounded-btn" to="/all">
 						All
 					</Link>
@@ -35,6 +31,9 @@ const MyNavigationBar: FC<Props> = (props) => {
 					</Link>
 					<Link className="btn btn-ghost btn-sm rounded-btn" to="/drinks">
 						Drinks
+					</Link>
+					<Link className="btn btn-ghost btn-sm rounded-btn" to="/orders">
+						Orders
 					</Link>
 				</div>
 			</div>
