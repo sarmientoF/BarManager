@@ -1,13 +1,9 @@
 import React, { useState } from "react";
-import { createAvatar } from "@dicebear/avatars";
-import * as style from "@dicebear/avatars-initials-sprites";
-import { DrinkState, UserState } from "../../features/user/user-slice";
+
+import { DrinkState } from "../../features/user/user-slice";
 
 import { BiEdit } from "react-icons/bi";
-import UpdateModal from "../modals/UpdateModal";
-import { updateDoc } from "@firebase/firestore";
-import { database } from "../../firebase";
-import { doc } from "firebase/firestore";
+
 import UpdateDrinkModal from "../modals/UpdateDrinkModal";
 
 interface Props {
@@ -66,7 +62,7 @@ const DrinkItem = ({ drink }: Props) => {
 						{drink.attributes.memo}
 					</p>
 					<div className="card-actions">
-						<button className="btn btn-error text-white">Delete</button>
+						<button className="btn btn-error text-white">削除</button>
 					</div>
 				</div>
 			</div>

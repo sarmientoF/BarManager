@@ -53,7 +53,7 @@ const DeleteOrderModal = ({ order, open, setOpen }: Props) => {
 					<div className="form-control mt-6">
 						<input
 							type="button"
-							value="Delete"
+							value="削除する"
 							className="btn btn-error text-white"
 							onClick={handleDelete}
 							disabled={loading}
@@ -62,7 +62,7 @@ const DeleteOrderModal = ({ order, open, setOpen }: Props) => {
 					<div className="form-control mt-6">
 						<input
 							type="button"
-							value="Cancel"
+							value="キャンセル"
 							className="btn btn-ghost btn-outline text-white"
 							onClick={handleClose}
 							disabled={loading}

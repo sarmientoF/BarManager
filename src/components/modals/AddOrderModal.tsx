@@ -68,12 +68,12 @@ const AddOrderModal = ({ user, open, setOpen }: Props) => {
 				<form className="card-body" onSubmit={handleUpdate}>
 					<div className="form-control">
 						<label className="label">
-							<span className="label-text">Drink ID</span>
+							<span className="label-text">ボトル番号</span>
 						</label>
 						<input
 							required
 							type="number"
-							placeholder="name"
+							placeholder="ボトル番号"
 							className="input input-bordered"
 							ref={numberRef}
 						/>
@@ -90,7 +90,7 @@ const AddOrderModal = ({ user, open, setOpen }: Props) => {
 							defaultValue="0"
 						>
 							<option value="0" disabled={true}>
-								Choose your superpower
+								ボトルを選択してください
 							</option>
 							{drinks.map((drink) => (
 								<option key={drink.uid} value={drink.uid}>
@@ -102,7 +102,7 @@ const AddOrderModal = ({ user, open, setOpen }: Props) => {
 					<div className="form-control mt-6">
 						<input
 							type="submit"
-							value="Update"
+							value="ボトルを追加する"
 							className="btn btn-info text-white"
 							disabled={loading}
 						/>
@@ -110,7 +110,7 @@ const AddOrderModal = ({ user, open, setOpen }: Props) => {
 					<div className="form-control mt-6">
 						<input
 							type="button"
-							value="Cancel"
+							value="キャンセル"
 							className="btn btn-error text-white"
 							onClick={handleClose}
 							disabled={loading}

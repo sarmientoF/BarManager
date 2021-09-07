@@ -22,10 +22,12 @@ function OrderItem({ order, filter }: Props): ReactElement {
 		(customer) => customer.uid == order.attributes.userId
 	);
 
-	let svg = createAvatar(style, {
-		seed: customer!.attributes.name,
-		dataUri: true,
-	});
+	let svg =
+		customer?.attributes.photo ||
+		createAvatar(style, {
+			seed: customer!.attributes.name,
+			dataUri: true,
+		});
 
 	if (filter) {
 		if (
@@ -58,8 +60,8 @@ function OrderItem({ order, filter }: Props): ReactElement {
 						</p>
 					</div>
 					<div className="flex-0">
-						<button onClick={handleRemove} className="btn btn-sm">
-							Remove
+						<button onClick={handleRemove} className="btn btn-sm bg-red-500">
+							削除
 						</button>
 					</div>
 				</div>

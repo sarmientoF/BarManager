@@ -37,8 +37,8 @@ export const useAuth = () => {
 };
 
 const actionCodeSettings = {
-	url: "http://localhost:3000/verify_signin",
-	// url: "https://barmanagerx.web.app/verify_signin",
+	// url: "http://localhost:3000/verify_signin",
+	url: "https://admin-barmanagerx.web.app/verify_signin",
 	handleCodeInApp: true,
 };
 
@@ -108,8 +108,6 @@ export const AuthProvider: FC<Props> = (props) => {
 
 	useEffect(() => {
 		if (currentUser) {
-			console.log("Start");
-
 			onSnapshot(
 				doc(db, "admins", currentUser.uid).withConverter(userConverter),
 				(doc) => {

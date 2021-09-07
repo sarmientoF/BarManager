@@ -46,7 +46,7 @@ const SearchQRModal = ({ path, open, setOpen }: Props) => {
 								}}
 								className={"tab " + (!tab && "tab-active")}
 							>
-								Name
+								名前など
 							</div>
 							<div
 								onClick={() => {
@@ -71,11 +71,11 @@ const SearchQRModal = ({ path, open, setOpen }: Props) => {
 						<>
 							<div className="form-control">
 								<label className="label">
-									<span className="label-text">Name</span>
+									<span className="label-text">名前</span>
 								</label>
 								<input
 									type="text"
-									placeholder="name"
+									placeholder="名前"
 									className="input input-bordered"
 									ref={valueRef}
 									required
@@ -84,7 +84,7 @@ const SearchQRModal = ({ path, open, setOpen }: Props) => {
 							<div className="form-control mt-4">
 								<input
 									type="submit"
-									value="Search"
+									value="検索"
 									className="btn btn-info text-white"
 									disabled={loading}
 									onClick={handleSearch}

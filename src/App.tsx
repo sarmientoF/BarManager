@@ -7,7 +7,6 @@ import DashboardPage from "./pages/DashboardPage";
 import SignInPage from "./pages/SignInPage";
 import VerifySignInPage from "./pages/VerifySignInPage";
 import UpdateProfile from "./pages/UpdateProfile";
-import ProfilePage from "./pages/ProfilePage";
 import OnlineUsersPage from "./pages/OnlineUsersPage";
 import NewUsersPage from "./pages/NewUsersPage";
 import AllUsersPage from "./pages/AllUsersPage";
@@ -49,9 +48,7 @@ function App() {
 			<PrivateRoute exact path="/online">
 				<OnlineUsersPage />
 			</PrivateRoute>
-			<PrivateRoute exact path="/profile">
-				<ProfilePage />
-			</PrivateRoute>
+
 			<PrivateRoute path="/drinks">
 				<DrinksPage />
 			</PrivateRoute>

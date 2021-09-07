@@ -17,7 +17,12 @@ interface UserAttributes {
 	name?: string;
 	job?: string;
 	phone?: string;
-	isInStore: boolean;
+	birthday?: string;
+	furigana?: string;
+	memo?: string;
+	photo?: string;
+	introducer?: string;
+	isInStore?: boolean;
 }
 
 interface Order {

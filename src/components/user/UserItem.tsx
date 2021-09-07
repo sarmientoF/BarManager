@@ -19,12 +19,13 @@ const UserItem = ({ user }: Props) => {
 	const drinks = useAppSelector((state) => state.user.drinks);
 
 	const uid = user.uid;
-	console.log("🚨 user ", user);
 
 	let svg = createAvatar(style, {
 		seed: user.attributes.name,
 		dataUri: true,
 	});
+
+	const photo = user.attributes.photo || svg;
 
 	const [open, setOpen] = useState(false);
 	const [loading, setLoading] = useState(false);
@@ -52,11 +53,11 @@ const UserItem = ({ user }: Props) => {
 		<>
 			{true && <AddOrderModal user={user} open={order} setOpen={setOrder} />}
 
-			<UpdateModal user={user} open={open} setOpen={setOpen} />
+			{open && <UpdateModal user={user} open={open} setOpen={setOpen} />}
 			<div className="card bordered text-left bg-base-100 shadow-lg">
 				<figure className="relative inline-flex">
 					<div className="flex justify-around">
-						<img src={svg} alt="" />
+						<img src={photo} className="object-cover w-full h-64" alt="" />
 						<button
 							onClick={() => {
 								setOpen(true);
@@ -79,7 +80,7 @@ const UserItem = ({ user }: Props) => {
 				<div className="card-body">
 					<div className="card-actions -mx-0.5">
 						<button onClick={handleAddOrder} className="btn btn-accent">
-							Add order
+							キープ登録
 						</button>
 
 						{user.attributes.isInStore ? (
@@ -88,7 +89,7 @@ const UserItem = ({ user }: Props) => {
 								disabled={loading}
 								className="btn btn-error text-white"
 							>
-								Leave
+								退店
 							</button>
 						) : (
 							<button
@@ -96,7 +97,7 @@ const UserItem = ({ user }: Props) => {
 								disabled={loading}
 								className="btn btn-info text-white"
 							>
-								Enter
+								入店
 							</button>
 						)}
 					</div>
@@ -109,10 +110,10 @@ const UserItem = ({ user }: Props) => {
 							<MdInfoOutline className="inline-flex ml-2 fill-current text-green-500 " />
 						</div>
 						<div className="collapse-content">
+							<p>{user.attributes.furigana}</p>
+							<p>{user.attributes.job}</p>
 							<ul className="list-inside list-disc">
 								{user.relationships?.orders?.map((order) => {
-									console.log("🚀🚀🚀🚀", order);
-
 									const drink = drinks.find(
 										(drink) => drink.uid == order.drinkId
 									);

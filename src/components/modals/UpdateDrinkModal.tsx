@@ -20,7 +20,6 @@ const UpdateDrinkModal = ({ drink, open, setOpen }: Props) => {
 	const handleUpdate = async () => {
 		const name = nameRef.current?.value || "";
 
-
 		setLoading(true);
 		await updateDoc(doc(database.drinks, uid), {
 			updatedAt: database.getCurrentTimestamp(),
@@ -47,11 +46,11 @@ const UpdateDrinkModal = ({ drink, open, setOpen }: Props) => {
 				<div className="card-body">
 					<div className="form-control">
 						<label className="label">
-							<span className="label-text">Name</span>
+							<span className="label-text">ボトル名</span>
 						</label>
 						<input
 							type="text"
-							placeholder="name"
+							placeholder="ボトル名"
 							className="input input-bordered"
 							defaultValue={drink.attributes.name}
 							ref={nameRef}
@@ -61,7 +60,7 @@ const UpdateDrinkModal = ({ drink, open, setOpen }: Props) => {
 					<div className="form-control mt-6">
 						<input
 							type="button"
-							value="Update"
+							value="更新する"
 							className="btn btn-info text-white"
 							onClick={handleUpdate}
 							disabled={loading}
@@ -70,7 +69,7 @@ const UpdateDrinkModal = ({ drink, open, setOpen }: Props) => {
 					<div className="form-control mt-6">
 						<input
 							type="button"
-							value="Cancel"
+							value="キャンセル"
 							className="btn btn-error text-white"
 							onClick={handleClose}
 							disabled={loading}

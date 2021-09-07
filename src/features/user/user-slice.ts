@@ -6,6 +6,11 @@ import { database, db } from "../../firebase";
 interface Attributes {
 	name: string;
 	phone: string;
+	birthday: string;
+	furigana: string;
+	memo: string;
+	photo: string;
+	introducer: string;
 	job: string;
 	isInStore: boolean;
 }
@@ -61,6 +66,11 @@ const UserAttributes: Attributes = {
 	name: "",
 	phone: "",
 	job: "",
+	birthday: "",
+	furigana: "",
+	introducer: "",
+	memo: "",
+	photo: "",
 	isInStore: false,
 };
 

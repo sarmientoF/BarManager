@@ -1,12 +1,7 @@
-import { updateDoc } from "@firebase/firestore";
 import { collection, doc, setDoc } from "firebase/firestore";
 import React, { useRef, useState } from "react";
-import { UserState } from "../../features/user/user-slice";
-import { database, db, storage } from "../../firebase";
-import { FilePond } from "react-filepond";
-import { v4 as uuidv4 } from "uuid";
-import { getDownloadURL } from "firebase/storage";
-import { ref, uploadBytes, uploadBytesResumable } from "@firebase/storage";
+import { database, db } from "../../firebase";
+import UploadImage from "../common/UploadImage";
 
 interface Props {
 	open: boolean;
@@ -21,7 +16,7 @@ const DrinkModal = ({ open, setOpen }: Props) => {
 	const drinkNameRef = useRef<HTMLInputElement>(null);
 
 	const handleCreate = async () => {
-		setLoading(true)
+		setLoading(true);
 		const drinkName = drinkNameRef.current?.value;
 		if (!url || !drinkName) return;
 		const newDrinkRef = doc(collection(db, "drinks"));
@@ -36,7 +31,6 @@ const DrinkModal = ({ open, setOpen }: Props) => {
 			uid: newDrinkRef.id,
 		});
 		setOpen(false);
-
 	};
 
 	const handleClose = () => {
@@ -56,11 +50,11 @@ const DrinkModal = ({ open, setOpen }: Props) => {
 				<div className="card-body">
 					<div className="form-control">
 						<label className="label">
-							<span className="label-text">Drink Name</span>
+							<span className="label-text">ボトル名</span>
 						</label>
 						<input
 							type="text"
-							placeholder="name"
+							placeholder="ボトル名"
 							className="input input-bordered"
 							ref={drinkNameRef}
 							required
@@ -68,80 +62,14 @@ const DrinkModal = ({ open, setOpen }: Props) => {
 					</div>
 					<div className="form-control">
 						<label className="label">
-							<span className="label-text">Image</span>
+							<span className="label-text">画像</span>
 						</label>
-						<FilePond
-							files={files}
-							onupdatefiles={(fileItems) => {
-								if (!fileItems) {
-									return;
-								}
-								setFiles(fileItems.map((fileItem) => fileItem.file));
-							}}
-							allowMultiple={false}
-							maxFiles={1}
-							server={{
-								process: (
-									fieldName,
-									file,
-									metadata,
-									load,
-									error,
-									progress,
-									abort
-								) => {
-									// create a unique id for the file
-									const drinksImageRef = ref(storage, "images");
-
-									const id = uuidv4();
-									console.log("Created id:", id);
-
-									const uploadTask = uploadBytesResumable(
-										ref(drinksImageRef, id),
-										file,
-										metadata
-									);
-
-									uploadTask.on(
-										"state_changed",
-										(snapshot) => {
-											progress(
-												true,
-												snapshot.bytesTransferred,
-												snapshot.totalBytes
-											);
-										},
-										(err) => {
-											error(err.message);
-										},
-										() => {
-											// the file has been uploaded
-											load(id);
-											getDownloadURL(uploadTask.snapshot.ref).then(
-												(downloadURL) => {
-													console.log("File available at", downloadURL);
-													setUrl(downloadURL);
-												}
-											);
-										}
-									);
-								},
-								revert: (uniqueFieldId, load, error) => {
-									console.log("rever id:", uniqueFieldId);
-									setUrl("");
-									load();
-									console.log("Finished 🚀");
-								},
-							}}
-							acceptedFileTypes={["image/*"]}
-							name="files"
-							labelIdle='Drag Drop your files or <span class="filepond--label-action">ばか</span>'
-						/>
+						<UploadImage setUrl={setUrl} refPath="images" />
 					</div>
 					<div className="form-control mt-4">
 						<input
 							type="submit"
-							value="Add drink"
+							value="ボトルを追加する"
 							className="btn btn-info text-white"
 							disabled={loading || !url}
 							onClick={handleCreate}

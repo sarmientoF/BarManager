@@ -5,6 +5,7 @@ import SearchModal from "../components/modals/SearchModal";
 import UserItem from "../components/user/UserItem";
 import { useQuery } from "./drinks/DrinksPage";
 import { BsSearch } from "react-icons/bs";
+import SearchQRModal from "../components/modals/SearchQRModal";
 
 interface Props {}
 
@@ -12,7 +13,6 @@ const AllUsersPage = (props: Props) => {
 	let query = useQuery();
 	const filterName = query.get("value");
 	const filterQR = query.get("qr");
-	console.log("🚀 value", filterName);
 
 	let customers = useAppSelector((state) => state.user.customers);
 
@@ -31,7 +31,7 @@ const AllUsersPage = (props: Props) => {
 
 	return (
 		<PrivateContainer>
-			<SearchModal path={"/all"} open={search} setOpen={setSearch} />
+			<SearchQRModal path={"/all"} open={search} setOpen={setSearch} />
 
 			<div className="fixed bottom-4 right-4 z-10">
 				<button
