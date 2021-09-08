@@ -78,7 +78,7 @@ const UserItem = ({ user }: Props) => {
 				</figure>
 
 				<div className="card-body">
-					<div className="card-actions -mx-0.5">
+					<div className="card-actions -mx-0.5 flex-nowrap">
 						<button onClick={handleAddOrder} className="btn btn-accent">
 							キープ登録
 						</button>
@@ -110,15 +110,15 @@ const UserItem = ({ user }: Props) => {
 							<MdInfoOutline className="inline-flex ml-2 fill-current text-green-500 " />
 						</div>
 						<div className="collapse-content">
-							<p>{user.attributes.furigana}</p>
-							<p>{user.attributes.job}</p>
+							<p className="line-clamp-1 ">{user.attributes.furigana}</p>
+							<p className="line-clamp-1 ">{user.attributes.job}</p>
 							<ul className="list-inside list-disc">
 								{user.relationships?.orders?.map((order) => {
 									const drink = drinks.find(
 										(drink) => drink.uid == order.drinkId
 									);
 									return (
-										<li key={order.orderId}>
+										<li key={order.orderId} className="line-clamp-1 ">
 											{order.drinkCode} {drink?.attributes.name}
 										</li>
 									);

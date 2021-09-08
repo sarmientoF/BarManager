@@ -10,15 +10,19 @@ import SearchQRModal from "../components/modals/SearchQRModal";
 interface Props {}
 
 const AllUsersPage = (props: Props) => {
+	const [page, setPage] = useState(1);
+	const n = 6;
 	let query = useQuery();
-	const filterName = query.get("value");
+	const filterName = query.get("value")?.toLowerCase();
 	const filterQR = query.get("qr");
 
 	let customers = useAppSelector((state) => state.user.customers);
 
 	if (filterName) {
 		customers = customers.filter((customer) =>
-			customer.attributes.name.toLowerCase().includes(filterName.toLowerCase())
+			Object.values(customer.attributes).some(
+				(e) => typeof e == "string" && e.toLowerCase().includes(filterName)
+			)
 		);
 	}
 
@@ -26,7 +30,8 @@ const AllUsersPage = (props: Props) => {
 		customers = customers.filter((customer) => customer.uid == filterQR);
 	}
 
-	// const customers = useAppSelector((state) => state.user.customers);
+	const pages = Math.ceil(customers.length / n);
+
 	const [search, setSearch] = useState(false);
 
 	return (
@@ -44,13 +49,32 @@ const AllUsersPage = (props: Props) => {
 				</button>
 			</div>
 			<div className="hero min-h-screen bg-base-200">
-				<div className="text-center hero-content">
-					<div className="">
-						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 place-content-center ">
-							{customers.map((customer) => (
-								<UserItem key={customer.uid} user={customer} />
-							))}
-						</div>
+				<div className="text-center w-full p-4">
+					<div className="grid grid-cols-fill gap-2 place-content-center ">
+						{customers.slice((page - 1) * n, page * n).map((customer) => (
+							<UserItem key={customer.uid} user={customer} />
+						))}
+					</div>
+					<div className="btn-group w-full flex justify-center pt-8">
+						<button
+							onClick={() => {
+								setPage(Math.max(1, page - 1));
+							}}
+							className="btn"
+						>
+							Previous
+						</button>
+						<button className={`btn  btn-active`}>
+							{page}/{pages}
+						</button>
+						<button
+							onClick={() => {
+								setPage(Math.min(page + 1, pages));
+							}}
+							className="btn"
+						>
+							Next
+						</button>
 					</div>
 				</div>
 			</div>

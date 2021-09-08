@@ -32,12 +32,13 @@ const SignInPage = (props: Props) => {
 	return (
 		<div
 			className="hero min-h-screen  bg-base-200 "
-			// className="hero min-h-screen bg-blend-overlay  bg-opacity-50"
-			// style={{
-			// 	backgroundImage: `url("https://picsum.photos/1600/1400?blur=2")`,
-			// 	// backgroundColor: "rgba(52, 52, 52, 1.3)",
-			// }}
+			style={{
+				backgroundImage:
+					"url(https://static01.nyt.com/images/2018/08/12/travel/12highball-E/merlin_141865956_c92b531e-177d-4924-a922-bafda6c620d2-superJumbo.jpg)",
+			}}
 		>
+			<div className="hero-overlay bg-opacity-60"></div>
+
 			<div className="flex-col justify-center hero-content lg:flex-row">
 				<div className="text-center lg:text-left">
 					<h1 className="mb-5 text-5xl font-bold">バーの名前</h1>
@@ -67,7 +68,7 @@ const SignInPage = (props: Props) => {
 						<div className="form-control mt-6">
 							<button
 								type="submit"
-								className="font-semibold text-lg btn btn-primary border-none bg-gradient-to-tr from-yellow-400 via-red-500 to-pink-500 disabled:opacity-70 "
+								className="font-semibold text-lg btn btn-primary border-none bg-gradient-to-tr from-yellow-500 via-red-400 to-pink-500 disabled:opacity-70 "
 								disabled={loading}
 							>
 								ログインする

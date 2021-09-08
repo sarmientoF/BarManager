@@ -52,9 +52,9 @@ const DrinkItem = ({ drink }: Props) => {
 				</figure>
 
 				<div className="card-body justify-end">
-					<h2 className="card-title  justify-self-start ">
+					<h2 className="card-title  justify-self-start line-clamp-1">
 						{drink.attributes.name || "No name yet"}
-						{isNew && <div className="badge mx-2 bg-green-400">NEW</div>}
+						{/* {isNew && <div className="badge mx-2 bg-green-400">NEW</div>} */}
 					</h2>
 					<p className="overflow-ellipsis flex-grow overflow-hidden line-clamp-2">
 						{drink.attributes.memo}

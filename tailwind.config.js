@@ -3,7 +3,12 @@ module.exports = {
 	purge: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
 	darkMode: "class", // or 'media' or 'class'
 	theme: {
-		extend: {},
+		extend: {
+			gridTemplateColumns: {
+				fill: "repeat(auto-fill, minmax(240px, 1fr))",
+				fill2: "repeat(auto-fill, minmax(270px, 1fr))",
+			},
+		},
 	},
 	variants: {
 		extend: {},

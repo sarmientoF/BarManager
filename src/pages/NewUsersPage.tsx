@@ -17,13 +17,11 @@ const NewUsersPage = (props: Props) => {
 	return (
 		<PrivateContainer>
 			<div className="hero min-h-screen bg-base-200">
-				<div className="text-center hero-content">
-					<div className="">
-						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 place-content-center ">
-							{newCustomers.map((customer) => (
-								<UserItem key={customer.uid} user={customer} />
-							))}
-						</div>
+				<div className="text-center w-full p-4">
+					<div className="grid grid-cols-fill gap-2 place-content-center ">
+						{newCustomers.map((customer) => (
+							<UserItem key={customer.uid} user={customer} />
+						))}
 					</div>
 				</div>
 			</div>

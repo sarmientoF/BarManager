@@ -33,13 +33,11 @@ const AllOrdersPage = (props: Props) => {
 				</button>
 			</div>
 			<div className="hero min-h-screen bg-base-200">
-				<div className="text-center hero-content">
-					<div className="">
-						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 place-content-center ">
-							{orders.map((order) => (
-								<OrderItem filter={filterName} order={order} />
-							))}
-						</div>
+				<div className="text-center w-full p-4">
+					<div className="grid grid-cols-fill2 gap-4 place-content-center">
+						{orders.map((order) => (
+							<OrderItem filter={filterName} order={order} />
+						))}
 					</div>
 				</div>
 			</div>

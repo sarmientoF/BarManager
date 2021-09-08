@@ -36,9 +36,9 @@ const DrinksPage = (props: Props) => {
 					onClick={() => {
 						setOpen(true);
 					}}
-					className="absolute right-4 bottom-4 btn btn-info btn-circle shadow-2xl"
+					className="absolute right-4 bottom-4 btn btn-info btn-circle shadow-2xl "
 				>
-					<IoMdAdd className="fill-current w-[70%] h-[70%]" />
+					<IoMdAdd className="fill-current w-[70%] h-[70%] text-white" />
 				</button>
 				<button
 					onClick={() => {
@@ -50,22 +50,8 @@ const DrinksPage = (props: Props) => {
 				</button>
 			</div>
 			<div className="hero min-h-screen bg-base-200 items-center">
-				<div className="text-center hero-content">
-					{/* <div className="">
-						<button
-							onClick={() => {
-								setOpen(true);
-							}}
-							className="btn btn-accent"
-						>
-							Add Drink
-						</button>
-						<button className="btn btn-accent">Search</button>
-					</div> */}
-					{/* <button className="btn btn-accent ">GASSDg</button> */}
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 place-content-center ">
-						{/* <button className="btn btn-accent ">GASSDg</button> */}
-
+				<div className="text-center w-full p-4">
+					<div className="grid grid-cols-fill gap-2 place-content-center ">
 						{drinks.map((drink) => (
 							<DrinkItem key={drink.uid} drink={drink} />
 						))}

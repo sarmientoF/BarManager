@@ -70,7 +70,7 @@ const UpdateModal = ({ user, open, setOpen }: Props) => {
 			></span>
 
 			<div className="modal-box">
-				<div className="card-body">
+				<div className="card-body py-0">
 					<div className="tabs">
 						{tabs.map((tab, i) => (
 							<a
@@ -113,7 +113,7 @@ const UpdateModal = ({ user, open, setOpen }: Props) => {
 								<span className="label-text">誕生日</span>
 							</label>
 							<input
-								type="text"
+								type="date"
 								placeholder="誕生日"
 								className="input input-bordered"
 								defaultValue={user.attributes.birthday}
@@ -180,20 +180,18 @@ const UpdateModal = ({ user, open, setOpen }: Props) => {
 						</div>
 					</div>
 
-					<div className="form-control mt-6">
+					<div className="form-control mt-6 flex-row justify-around space-x-1">
 						<input
 							type="button"
 							value="更新する"
-							className="btn btn-info text-white"
+							className="btn btn-info text-white w-1/2"
 							onClick={handleUpdate}
 							disabled={loading}
 						/>
-					</div>
-					<div className="form-control mt-6">
 						<input
 							type="button"
 							value="キャンセル"
-							className="btn btn-error text-white"
+							className="btn btn-error text-white w-1/2"
 							onClick={handleClose}
 							disabled={loading}
 						/>

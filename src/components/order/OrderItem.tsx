@@ -32,7 +32,8 @@ function OrderItem({ order, filter }: Props): ReactElement {
 	if (filter) {
 		if (
 			!customer?.attributes.name.toLowerCase().includes(filter) &&
-			!order.attributes.drinkCode.includes(filter)
+			!order.attributes.drinkCode.includes(filter) &&
+			!drink?.attributes.name.includes(filter)
 		) {
 			return <></>;
 		}
@@ -41,7 +42,7 @@ function OrderItem({ order, filter }: Props): ReactElement {
 	return (
 		<>
 			<DeleteOrderModal order={order} open={open} setOpen={setOpen} />
-			<div className="card shadow-lg compact side bg-base-100 ">
+			<div className="card shadow-lg compact side bg-base-100">
 				<div className="flex-row items-center space-x-4 card-body text-left">
 					<div>
 						<div className="avatar">
