@@ -19,6 +19,7 @@ export interface Order {
 	drinkCode: string;
 	drinkId: string;
 	orderId: string;
+
 }
 
 interface Relationships {
@@ -33,6 +34,7 @@ interface OrderAttributes {
 	drinkId: string;
 	drinkCode: string;
 	userId: string;
+	inUse?: boolean
 }
 export interface UserState {
 	uid: string;
@@ -91,7 +93,6 @@ const userSlice = createSlice({
 		},
 		watchUsers(state, action: PayloadAction<any>) {
 			let data = action.payload;
-			// console.log("watch users:", data);
 
 			state.customers = data;
 		},

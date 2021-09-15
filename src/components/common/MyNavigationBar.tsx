@@ -2,11 +2,37 @@ import React, { FC } from "react";
 import { FiMenu } from "react-icons/fi";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { MdAccountCircle } from "react-icons/md";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+
+enum Paths {
+	ALL = "/all",
+	ONLINE = "/online",
+	NEW = "/new",
+	DRINKS = "/drinks",
+	ORDERS = "/orders",
+}
+const getName = (path: string) => {
+	switch (path) {
+		case "/all":
+			return "顧客管理";
+		case "/online":
+			return "来店中";
+		case "/new":
+			return "初来店";
+		case "/drinks":
+			return "ボトル管理";
+		case "/orders":
+			return "キープ管理";
+		default:
+			return "Admin ManagerX";
+	}
+};
 interface Props {}
 
 const AllDrinks: FC = () => {
+	const location = useLocation();
+
 	return (
 		<>
 			<Link className="btn btn-ghost btn-sm rounded-btn" to="/all">
@@ -33,16 +59,34 @@ const MyNavigationBar: FC<Props> = (props) => {
 		// return;
 		await logout();
 	};
-	// navbar shadow-lg  bg-neutral-focus text-neutral-content
+	const location = useLocation();
+
 
 	return (
 		<div className="mx-auto space-x-1 navbar max-w-none">
 			<div className="px-2 mx-2 navbar-start">
-				<span className="text-lg font-bold">Admin ManagerX</span>
+				<span className="text-lg font-bold sr-only md:not-sr-only">
+					Admin ManagerX
+				</span>
+				<span className="text-lg font-bold md:sr-only">
+					{getName(location.pathname)}
+				</span>
 			</div>
 			<div className="hidden px-2 mx-2 navbar-center md:flex">
 				<div className="flex items-stretch">
-					<AllDrinks />
+					{Object.values(Paths).map((key) => {
+						return (
+							<Link
+								className={`btn btn-ghost btn-sm rounded-btn ${
+									location.pathname == key && "btn-active"
+								}`}
+								to={key}
+								key={key}
+							>
+								{getName(key)}
+							</Link>
+						);
+					})}
 				</div>
 			</div>
 			<div className="navbar-end">

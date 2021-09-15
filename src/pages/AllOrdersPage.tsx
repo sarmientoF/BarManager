@@ -6,7 +6,6 @@ import UserItem from "../components/user/UserItem";
 import { useQuery } from "./drinks/DrinksPage";
 import { BsSearch } from "react-icons/bs";
 import OrderItem from "../components/order/OrderItem";
-import { Order, UserState } from "../features/user/user-slice";
 
 interface Props {}
 
@@ -20,7 +19,7 @@ const AllOrdersPage = (props: Props) => {
 
 	return (
 		<PrivateContainer>
-			<SearchModal path={"/orders"} open={search} setOpen={setSearch} />
+			<SearchModal various path={"/orders"} open={search} setOpen={setSearch} />
 
 			<div className="fixed bottom-4 right-4 z-10">
 				<button

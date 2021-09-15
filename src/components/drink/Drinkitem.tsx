@@ -5,6 +5,7 @@ import { DrinkState } from "../../features/user/user-slice";
 import { BiEdit } from "react-icons/bi";
 
 import UpdateDrinkModal from "../modals/UpdateDrinkModal";
+import DeleteDrinkModal from "../modals/DeleteDrinkModal copy";
 
 interface Props {
 	drink: DrinkState;
@@ -14,6 +15,7 @@ const DrinkItem = ({ drink }: Props) => {
 	const uid = drink.uid;
 
 	const [open, setOpen] = useState(false);
+	const [del, setDel] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const createdAt = new Date(drink.createdAt);
 	const updatedAt = new Date(drink.updatedAt);
@@ -32,6 +34,7 @@ const DrinkItem = ({ drink }: Props) => {
 	return (
 		<>
 			<UpdateDrinkModal drink={drink} open={open} setOpen={setOpen} />
+			<DeleteDrinkModal drink={drink} open={del} setOpen={setDel} />
 			<div className="card bordered text-left bg-base-100 shadow-lg">
 				<figure className="relative inline-flex shadow-2xl">
 					<div className="flex justify-around">
@@ -58,12 +61,17 @@ const DrinkItem = ({ drink }: Props) => {
 					</h2>
 					<p className="overflow-ellipsis flex-grow overflow-hidden line-clamp-2">
 						{drink.attributes.memo}
-						{drink.attributes.memo}
-						{drink.attributes.memo}
 					</p>
-					<div className="card-actions">
-						<button className="btn btn-error text-white">削除</button>
-					</div>
+					{/* <div className="card-actions">
+						<button
+							onClick={() => {
+								setDel(true);
+							}}
+							className="btn btn-error text-white"
+						>
+							削除
+						</button>
+					</div> */}
 				</div>
 			</div>
 		</>

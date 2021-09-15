@@ -10,23 +10,20 @@ interface Props {
 	setOpen: (state: boolean) => void;
 }
 
-const UpdateDrinkModal = ({ drink, open, setOpen }: Props) => {
+const DeleteDrinkModal = ({ drink, open, setOpen }: Props) => {
 	const uid = drink.uid;
 
 	const nameRef = useRef<HTMLInputElement>(null);
-	const memoRef = useRef<HTMLInputElement>(null);
 
 	const [loading, setLoading] = useState(false);
 
 	const handleUpdate = async () => {
 		const name = nameRef.current?.value || "";
-		const memo = memoRef.current?.value || "";
 
 		setLoading(true);
 		await updateDoc(doc(database.drinks, uid), {
 			updatedAt: database.getCurrentTimestamp(),
 			"attributes.name": name,
-			"attributes.memo": memo,
 		});
 		setLoading(false);
 		setOpen(false);
@@ -47,43 +44,20 @@ const UpdateDrinkModal = ({ drink, open, setOpen }: Props) => {
 
 			<div className="modal-box">
 				<div className="card-body">
-					<div className="form-control">
-						<label className="label">
-							<span className="label-text">ボトル名</span>
-						</label>
-						<input
-							type="text"
-							placeholder="ボトル名"
-							className="input input-bordered"
-							defaultValue={drink.attributes.name}
-							ref={nameRef}
-						/>
-					</div>
-					<div className="form-control">
-						<label className="label">
-							<span className="label-text">メモ</span>
-						</label>
-						<input
-							type="text"
-							placeholder="メモ"
-							className="input input-bordered"
-							defaultValue={drink.attributes.memo}
-							ref={memoRef}
-						/>
-					</div>
-
-					<div className="form-control mt-6 flex-row justify-around space-x-1">
+					<div className="form-control mt-6">
 						<input
 							type="button"
-							value="更新する"
-							className="btn btn-info text-white w-1/2"
+							value="削除"
+							className="btn btn-error text-white"
 							onClick={handleUpdate}
 							disabled={loading}
 						/>
+					</div>
+					<div className="form-control mt-6">
 						<input
 							type="button"
 							value="キャンセル"
-							className="btn btn-error text-white w-1/2"
+							className="btn btn-ghost btn-outline text-white"
 							onClick={handleClose}
 							disabled={loading}
 						/>
@@ -94,4 +68,4 @@ const UpdateDrinkModal = ({ drink, open, setOpen }: Props) => {
 	);
 };
 
-export default UpdateDrinkModal;
+export default DeleteDrinkModal;

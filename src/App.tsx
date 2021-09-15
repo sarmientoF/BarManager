@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 import { useAppDisptach, useAppSelector } from "./app/hooks";
 import { useFetchBreedsQuery } from "./features/dogs/dogs-api-slice";
-import { Route, Switch } from "react-router-dom";
+import { Redirect, Route, Switch } from "react-router-dom";
 import PrivateRoute from "./components/common/PrivateRoute";
 import DashboardPage from "./pages/DashboardPage";
 import SignInPage from "./pages/SignInPage";
 import VerifySignInPage from "./pages/VerifySignInPage";
-import UpdateProfile from "./pages/UpdateProfile";
 import OnlineUsersPage from "./pages/OnlineUsersPage";
 import NewUsersPage from "./pages/NewUsersPage";
 import AllUsersPage from "./pages/AllUsersPage";
@@ -36,6 +35,8 @@ function App() {
 	const [files, setFiles] = useState([]);
 	return (
 		<Switch>
+			<Redirect exact from="/" to="/all" />
+
 			<PrivateRoute exact path="/">
 				<DashboardPage />
 			</PrivateRoute>

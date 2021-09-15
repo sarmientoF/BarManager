@@ -37,8 +37,8 @@ export const useAuth = () => {
 };
 
 const actionCodeSettings = {
-	// url: "http://localhost:3000/verify_signin",
-	url: "https://admin-barmanagerx.web.app/verify_signin",
+	url: "http://localhost:3000/verify_signin",
+	// url: "https://admin-barmanagerx.web.app/verify_signin",
 	handleCodeInApp: true,
 };
 

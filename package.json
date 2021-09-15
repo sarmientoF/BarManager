@@ -9,6 +9,7 @@
 	"dependencies": {
 		"@dicebear/avatars": "^4.8.6",
 		"@dicebear/avatars-initials-sprites": "^4.8.6",
+		"@heroicons/react": "^1.0.4",
 		"@reduxjs/toolkit": "^1.6.1",
 		"@tailwindcss/line-clamp": "^0.2.1",
 		"axios": "^0.21.1",
@@ -19,6 +20,7 @@
 		"filepond-plugin-image-preview": "^4.6.8",
 		"firebase": "^9.0.1",
 		"react": "^17.0.0",
+		"react-datepicker": "^4.2.1",
 		"react-dom": "^17.0.0",
 		"react-filepond": "^7.1.1",
 		"react-icons": "^4.2.0",
@@ -30,6 +32,7 @@
 	},
 	"devDependencies": {
 		"@types/react": "^17.0.0",
+		"@types/react-datepicker": "^4.1.7",
 		"@types/react-dom": "^17.0.0",
 		"@types/react-qr-reader": "^2.1.4",
 		"@types/react-router-dom": "^5.1.8",

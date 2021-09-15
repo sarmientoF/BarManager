@@ -6,6 +6,7 @@ import MyNavigationBar from "../components/common/MyNavigationBar";
 import { useHistory } from "react-router";
 import PrivateContainer from "../components/common/PrivateContainer";
 import { useAppSelector } from "../app/hooks";
+import GuideItems from "../components/GuideItems";
 interface Props {}
 
 const DashboardPage = (props: Props) => {
@@ -33,9 +34,8 @@ const DashboardPage = (props: Props) => {
 				<div className="hero-overlay bg-opacity-60"></div>
 
 				<div className="text-center hero-content bg-opacity-60">
-					<div className="max-w-md space-y-12">
-						<h1 className="mb-5 text-5xl font-bold">バーの名前</h1>
-						<p className="mb-5">ここはバーの情報を載せます。</p>
+					<div className=" space-y-12">
+						<GuideItems />
 					</div>
 				</div>
 			</div>

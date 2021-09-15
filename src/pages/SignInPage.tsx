@@ -63,6 +63,7 @@ const SignInPage = (props: Props) => {
 								className="input input-bordered required:input-info  focus:invalid:input-error valid:input-info"
 								required
 								ref={emailRef}
+								autoComplete="email"
 							/>
 						</div>
 						<div className="form-control mt-6">

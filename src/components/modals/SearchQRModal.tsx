@@ -71,11 +71,11 @@ const SearchQRModal = ({ path, open, setOpen }: Props) => {
 						<>
 							<div className="form-control">
 								<label className="label">
-									<span className="label-text">名前</span>
+									<span className="label-text">名前など</span>
 								</label>
 								<input
 									type="text"
-									placeholder="名前"
+									placeholder="名前,会社名,その他"
 									className="input input-bordered"
 									ref={valueRef}
 									required

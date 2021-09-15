@@ -80,7 +80,7 @@ const AddOrderModal = ({ user, open, setOpen }: Props) => {
 					</div>
 					<div className="form-control">
 						<label className="label">
-							<span className="label-text">Drink</span>
+							<span className="label-text">銘柄名</span>
 						</label>
 
 						<select
@@ -99,19 +99,18 @@ const AddOrderModal = ({ user, open, setOpen }: Props) => {
 							))}
 						</select>
 					</div>
-					<div className="form-control mt-6">
+
+					<div className="form-control mt-6 flex-row justify-around space-x-1">
 						<input
 							type="submit"
 							value="ボトルを追加する"
-							className="btn btn-info text-white"
+							className="btn btn-info text-white w-1/2"
 							disabled={loading}
 						/>
-					</div>
-					<div className="form-control mt-6">
 						<input
 							type="button"
 							value="キャンセル"
-							className="btn btn-error text-white"
+							className="btn btn-error text-white w-1/2"
 							onClick={handleClose}
 							disabled={loading}
 						/>

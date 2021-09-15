@@ -6,7 +6,8 @@ module.exports = {
 		extend: {
 			gridTemplateColumns: {
 				fill: "repeat(auto-fill, minmax(240px, 1fr))",
-				fill2: "repeat(auto-fill, minmax(270px, 1fr))",
+				small: "repeat(auto-fill, minmax(0.5fr, 1fr))",
+				fill2: "repeat(auto-fill, minmax(300px, 1fr))",
 			},
 		},
 	},

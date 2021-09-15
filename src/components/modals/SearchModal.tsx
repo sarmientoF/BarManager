@@ -5,9 +5,10 @@ interface Props {
 	path: string;
 	open: boolean;
 	setOpen: (state: boolean) => void;
+	various?: boolean;
 }
 
-const SearchModal = ({ path, open, setOpen }: Props) => {
+const SearchModal = ({ path, open, setOpen, various = false }: Props) => {
 	const [loading, setLoading] = useState(false);
 
 	const valueRef = useRef<HTMLInputElement>(null);
@@ -30,11 +31,11 @@ const SearchModal = ({ path, open, setOpen }: Props) => {
 				<div className="card-body">
 					<div className="form-control">
 						<label className="label">
-							<span className="label-text">名前など</span>
+							<span className="label-text">{various ? "名前など": "名前"}</span>
 						</label>
 						<input
 							type="text"
-							placeholder="名前"
+							placeholder={various ? "ボトル番号、名前、銘柄名" : "名前"}
 							className="input input-bordered"
 							ref={valueRef}
 							required

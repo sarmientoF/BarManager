@@ -14,6 +14,7 @@ interface OrdersAttributes {
 	drinkCode?: string;
 	drinkId?: string;
 	userId?: string;
+	inUse?: boolean
 }
 
 export class OrderData {

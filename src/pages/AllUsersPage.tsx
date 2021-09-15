@@ -6,12 +6,13 @@ import UserItem from "../components/user/UserItem";
 import { useQuery } from "./drinks/DrinksPage";
 import { BsSearch } from "react-icons/bs";
 import SearchQRModal from "../components/modals/SearchQRModal";
+import SmallUserCard from "../components/user/SmallUserCard";
 
 interface Props {}
 
 const AllUsersPage = (props: Props) => {
 	const [page, setPage] = useState(1);
-	const n = 6;
+	const n = 50;
 	let query = useQuery();
 	const filterName = query.get("value")?.toLowerCase();
 	const filterQR = query.get("qr");
@@ -50,9 +51,9 @@ const AllUsersPage = (props: Props) => {
 			</div>
 			<div className="hero min-h-screen bg-base-200">
 				<div className="text-center w-full p-4">
-					<div className="grid grid-cols-fill gap-2 place-content-center ">
+					<div className="grid grid-cols-1 lg:grid-cols-2 gap-2 place-content-center items-stretch ">
 						{customers.slice((page - 1) * n, page * n).map((customer) => (
-							<UserItem key={customer.uid} user={customer} />
+							<SmallUserCard key={customer.uid} user={customer} />
 						))}
 					</div>
 					<div className="btn-group w-full flex justify-center pt-8">
@@ -64,7 +65,7 @@ const AllUsersPage = (props: Props) => {
 						>
 							Previous
 						</button>
-						<button className={`btn  btn-active`}>
+						<button className={`btn  btn-accent`}>
 							{page}/{pages}
 						</button>
 						<button
