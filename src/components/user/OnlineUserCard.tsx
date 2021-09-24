@@ -3,21 +3,26 @@ import { createAvatar } from "@dicebear/avatars";
 import * as style from "@dicebear/avatars-initials-sprites";
 import { UserState } from "../../features/user/user-slice";
 
-import { BiEdit } from "react-icons/bi";
 import UpdateModal from "../modals/UpdateModal";
 import { updateDoc } from "@firebase/firestore";
 import { database } from "../../firebase";
 import { doc } from "firebase/firestore";
 import AddOrderModal from "../modals/AddOrderModal";
 import { useAppSelector } from "../../app/hooks";
-import { MdInfoOutline } from "react-icons/md";
-import { IoMdAdd } from "react-icons/io";
+
+import DeleteOrderModal from "../modals/DeleteOrderModal";
 
 interface Props {
 	user: UserState;
+	showLeave?: boolean;
+	canDelete?: boolean;
 }
 
-const OnlineUserCard = ({ user }: Props) => {
+const OnlineUserCard = ({
+	user,
+	showLeave = false,
+	canDelete = false,
+}: Props) => {
 	const drinks = useAppSelector((state) => state.user.drinks);
 
 	const uid = user.uid;
@@ -30,6 +35,7 @@ const OnlineUserCard = ({ user }: Props) => {
 		});
 
 	const [open, setOpen] = useState(false);
+	const [deleteOrder, setDeleteOrder] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [order, setOrder] = useState(false);
 
@@ -56,10 +62,11 @@ const OnlineUserCard = ({ user }: Props) => {
 	};
 	return (
 		<>
-			{true && <AddOrderModal user={user} open={order} setOpen={setOrder} />}
+			{order && <AddOrderModal user={user} open={order} setOpen={setOrder} />}
 
 			{open && <UpdateModal user={user} open={open} setOpen={setOpen} />}
-			<li className="card bordered text-left bg-base-100 shadow-lg  col-span-1 rounded-lg  ">
+
+			<li className="card bordered text-left bg-base-100 shadow-lg  col-span-1 rounded-lg overflow-visible  max-w-xl w-full ">
 				<div className="w-full flex items-center justify-between p-6 space-x-6">
 					<div className="flex-1 truncate">
 						<div className="flex items-center space-x-3">
@@ -75,7 +82,7 @@ const OnlineUserCard = ({ user }: Props) => {
 						</p>
 					</div>
 					<img
-						className="w-20 h-20 bg-gray-300 rounded-md flex-shrink-0 object-cover shadow-lg"
+						className="w-16 h-16 bg-gray-300 rounded-md flex-shrink-0 object-cover shadow-lg"
 						src={photo}
 						alt=""
 					/>
@@ -85,8 +92,33 @@ const OnlineUserCard = ({ user }: Props) => {
 						{user.relationships?.orders?.map((order) => {
 							const drink = drinks.find((drink) => drink.uid == order.drinkId);
 							return (
-								<li key={order.orderId} className="truncate">
-									{order.drinkCode} {drink?.attributes.name}
+								// <div key={order.orderId}>
+								<li key={order.orderId} className="dropdown ">
+									{canDelete && (
+										<DeleteOrderModal
+											order={{ uid: order.orderId, userId: user.uid }}
+											open={deleteOrder}
+											setOpen={setDeleteOrder}
+										/>
+									)}
+									<div tabIndex={0} className="m-1 btn">
+										{order.drinkCode} {drink?.attributes.name}
+									</div>
+									{canDelete && (
+										<ul
+											tabIndex={0}
+											className="p-2 shadow menu  dropdown-content bg-base-100 rounded-box w-52"
+										>
+											<li>
+												<button
+													onClick={() => setDeleteOrder(true)}
+													className="btn btn-error text-white text-lg"
+												>
+													削除
+												</button>
+											</li>
+										</ul>
+									)}
 								</li>
 							);
 						})}
@@ -117,9 +149,11 @@ const OnlineUserCard = ({ user }: Props) => {
 							</a>
 						</div>
 
-						<div onClick={handleInStore} className="-ml-px flex-1 flex">
-							<a className="btn btn-ghost btn-block  h-full  text-lg">退店</a>
-						</div>
+						{showLeave && (
+							<div onClick={handleInStore} className="-ml-px flex-1 flex">
+								<a className="btn btn-ghost btn-block  h-full  text-lg">退店</a>
+							</div>
+						)}
 					</div>
 				</div>
 			</li>

@@ -1,27 +1,11 @@
 import React from "react";
-import { FaBeer } from "react-icons/fa";
-import { IoIosNotificationsOutline } from "react-icons/io";
-import { AiFillEye } from "react-icons/ai";
-import MyNavigationBar from "../components/common/MyNavigationBar";
-import { useHistory } from "react-router";
 import PrivateContainer from "../components/common/PrivateContainer";
-import { useAppSelector } from "../app/hooks";
 import GuideItems from "../components/GuideItems";
 interface Props {}
 
 const DashboardPage = (props: Props) => {
-	const { createdAt, updatedAt } = useAppSelector((state) => state.user.user);
-	const history = useHistory();
 
-	const handleUpdateProfile = () => {
-		history.push("/update");
-	};
 
-	const handleGoToProfile = () => {
-		history.push("/profile");
-	};
-
-	const isNew = createdAt === updatedAt;
 	return (
 		<PrivateContainer>
 			<div

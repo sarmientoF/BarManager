@@ -46,6 +46,7 @@ function OrderItem({ order, filter }: Props): ReactElement {
 	if (filter) {
 		if (
 			!customer?.attributes.name.toLowerCase().includes(filter) &&
+			!customer?.attributes.furigana.includes(filter) &&
 			!order.attributes.drinkCode.includes(filter) &&
 			!drink?.attributes.name.includes(filter)
 		) {
@@ -55,7 +56,11 @@ function OrderItem({ order, filter }: Props): ReactElement {
 
 	return (
 		<>
-			<DeleteOrderModal order={order} open={open} setOpen={setOpen} />
+			<DeleteOrderModal
+				order={{ uid: order.uid, userId: order.attributes.userId }}
+				open={open}
+				setOpen={setOpen}
+			/>
 			<li className="card bordered text-left bg-base-100 shadow-lg  col-span-1 rounded-lg  ">
 				<div className="w-full flex items-center justify-between p-6 space-x-6">
 					<div className="flex-1 truncate">
@@ -64,15 +69,19 @@ function OrderItem({ order, filter }: Props): ReactElement {
 								{customer?.attributes.name}
 							</h3>
 						</div>
+						<p className="mt-1 text-base truncate text-base-content text-opacity-60">
+							{customer?.attributes.furigana}
+						</p>
 						<p className="mt-1 text-2xl truncate text-base-content text-opacity-60">
 							{drink?.attributes.name}
 						</p>
+
 						<p className="mt-1 text-2xl truncate text-base-content text-opacity-60">
 							{order.attributes.drinkCode}
 						</p>
 					</div>
 					<img
-						className="w-20 h-20 bg-gray-300 rounded-md flex-shrink-0 object-cover shadow-lg"
+						className="w-16 h-16 bg-gray-300 rounded-md flex-shrink-0 object-cover shadow-lg"
 						src={photo}
 						alt=""
 					/>

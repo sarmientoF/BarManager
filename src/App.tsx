@@ -19,6 +19,7 @@ import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 import AllOrdersPage from "./pages/AllOrdersPage";
 import QRPage from "./pages/QRPage";
+import AddStaffPage from "./pages/AddStaffPage";
 registerPlugin(
 	FilePondPluginImageExifOrientation,
 	FilePondPluginImagePreview,
@@ -35,7 +36,7 @@ function App() {
 	const [files, setFiles] = useState([]);
 	return (
 		<Switch>
-			<Redirect exact from="/" to="/all" />
+			{/* <Redirect exact from="/" to="/all" /> */}
 
 			<PrivateRoute exact path="/">
 				<DashboardPage />
@@ -48,6 +49,10 @@ function App() {
 			</PrivateRoute>
 			<PrivateRoute exact path="/online">
 				<OnlineUsersPage />
+			</PrivateRoute>
+
+			<PrivateRoute exact path="/add">
+				<AddStaffPage />
 			</PrivateRoute>
 
 			<PrivateRoute path="/drinks">

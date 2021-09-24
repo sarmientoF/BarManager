@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useAppSelector } from "../app/hooks";
 import PrivateContainer from "../components/common/PrivateContainer";
-import SearchModal from "../components/modals/SearchModal";
+import SearchDrinkModal from "../components/modals/SearchDrinkModal";
 import UserItem from "../components/user/UserItem";
 import { useQuery } from "./drinks/DrinksPage";
 import { BsSearch } from "react-icons/bs";
@@ -19,7 +19,7 @@ const AllOrdersPage = (props: Props) => {
 
 	return (
 		<PrivateContainer>
-			<SearchModal various path={"/orders"} open={search} setOpen={setSearch} />
+			<SearchDrinkModal various path={"/orders"} open={search} setOpen={setSearch} />
 
 			<div className="fixed bottom-4 right-4 z-10">
 				<button
@@ -35,7 +35,7 @@ const AllOrdersPage = (props: Props) => {
 				<div className="text-center w-full p-4">
 					<div className="grid grid-cols-fill2 gap-4 place-content-center">
 						{orders.map((order) => (
-							<OrderItem filter={filterName} order={order} />
+							<OrderItem key={order.uid} filter={filterName} order={order} />
 						))}
 					</div>
 				</div>

@@ -36,8 +36,8 @@ const NewUserCard = ({ user }: Props) => {
 	const createdAt = new Date(user.createdAt);
 	const updatedAt = new Date(user.updatedAt);
 
-	const isNew = createdAt.toDateString() === updatedAt.toDateString();
-
+	// const isNew = createdAt.toDateString() === updatedAt.toDateString();
+	// const isNew = createdAt.toLocaleDateString() == new Date().toLocaleDateString()
 	const handleEdit = () => {
 		setOpen(true);
 	};

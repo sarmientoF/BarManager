@@ -14,18 +14,23 @@ interface Props {
 const AddOrderModal = ({ user, open, setOpen }: Props) => {
 	const uid = user.uid;
 
-	const numberRef = useRef<HTMLInputElement>(null);
 	const drinkRef = useRef<HTMLSelectElement>(null);
 
 	const [loading, setLoading] = useState(false);
+	const [drinkCode, setDrinkCode] = useState("");
+
+	const [error, setError] = useState("");
 
 	const drinks = useAppSelector((state) => state.user.drinks);
+
+	const ordersIDs = useAppSelector((state) =>
+		state.user.orders.map((order) => order.attributes.drinkCode)
+	);
 
 	const handleUpdate = async (e: FormEvent) => {
 		e.preventDefault();
 		setLoading(true);
 
-		const drinkCode = numberRef.current?.value;
 		const drinkId = drinkRef.current?.value;
 
 		if (drinkId && drinkCode) {
@@ -66,6 +71,13 @@ const AddOrderModal = ({ user, open, setOpen }: Props) => {
 
 			<div className="modal-box">
 				<form className="card-body" onSubmit={handleUpdate}>
+					{error && (
+						<div className="alert alert-error">
+							<div className="flex-1">
+								<label>{error}</label>
+							</div>
+						</div>
+					)}
 					<div className="form-control">
 						<label className="label">
 							<span className="label-text">ボトル番号</span>
@@ -75,7 +87,15 @@ const AddOrderModal = ({ user, open, setOpen }: Props) => {
 							type="number"
 							placeholder="ボトル番号"
 							className="input input-bordered"
-							ref={numberRef}
+							value={drinkCode}
+							onChange={(val) => {
+								setDrinkCode(val.currentTarget.value);
+								if (ordersIDs.some((id) => id == val.currentTarget.value)) {
+									setError("すでにこのボトル番号は使用されていま");
+								} else {
+									setError("");
+								}
+							}}
 						/>
 					</div>
 					<div className="form-control">
@@ -87,7 +107,7 @@ const AddOrderModal = ({ user, open, setOpen }: Props) => {
 							required
 							className="select select-bordered w-full"
 							ref={drinkRef}
-							defaultValue="0"
+							// defaultValue="0"
 						>
 							<option value="0" disabled={true}>
 								ボトルを選択してください
@@ -105,7 +125,7 @@ const AddOrderModal = ({ user, open, setOpen }: Props) => {
 							type="submit"
 							value="ボトルを追加する"
 							className="btn btn-info text-white w-1/2"
-							disabled={loading}
+							disabled={loading || error != ""}
 						/>
 						<input
 							type="button"

@@ -2,57 +2,63 @@ import React, { FC } from "react";
 import { FiMenu } from "react-icons/fi";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { MdAccountCircle } from "react-icons/md";
+import { useStore } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
+import { useAppSelector } from "../../app/hooks";
 import { useAuth } from "../../context/AuthContext";
 
-enum Paths {
-	ALL = "/all",
-	ONLINE = "/online",
-	NEW = "/new",
-	DRINKS = "/drinks",
-	ORDERS = "/orders",
-}
-const getName = (path: string) => {
-	switch (path) {
-		case "/all":
-			return "顧客管理";
-		case "/online":
-			return "来店中";
-		case "/new":
-			return "初来店";
-		case "/drinks":
-			return "ボトル管理";
-		case "/orders":
-			return "キープ管理";
-		default:
-			return "Admin ManagerX";
-	}
-};
-interface Props {}
+export const my_paths = [
+	{
+		ref: "/all",
+		tag: "顧客管理",
+	},
+	{
+		ref: "/online",
+		tag: "来店中",
+	},
+	{
+		ref: "/new",
+		tag: "初来店",
+	},
+	{
+		ref: "/drinks",
+		tag: "ボトル管理",
+	},
+	{
+		ref: "/orders",
+		tag: "キープ管理",
+	},
+	{
+		ref: "/add",
+		tag: "スタッフ管理",
+	},
+];
 
-const AllDrinks: FC = () => {
+interface AllDrinksProps {
+	paths: {
+		ref: string;
+		tag: string;
+	}[];
+}
+
+const AllDrinks: FC<AllDrinksProps> = ({ paths }) => {
 	const location = useLocation();
 
 	return (
 		<>
-			<Link className="btn btn-ghost btn-sm rounded-btn" to="/all">
-				顧客管理
-			</Link>
-			<Link className="btn btn-ghost btn-sm rounded-btn" to="/online">
-				来店中
-			</Link>
-			<Link className="btn btn-ghost btn-sm rounded-btn" to="/new">
-				初来店
-			</Link>
-			<Link className="btn btn-ghost btn-sm rounded-btn" to="/drinks">
-				ボトル管理
-			</Link>
-			<Link className="btn btn-ghost btn-sm rounded-btn" to="/orders">
-				キープ管理
-			</Link>
+			{paths.map((path) => (
+				<Link
+					key={path.ref}
+					className="btn btn-ghost btn-sm rounded-btn"
+					to={path.ref}
+				>
+					{path.tag}
+				</Link>
+			))}
 		</>
 	);
 };
+interface Props {}
 const MyNavigationBar: FC<Props> = (props) => {
 	const { logout } = useAuth();
 	const handleSignOut = async () => {
@@ -61,32 +67,37 @@ const MyNavigationBar: FC<Props> = (props) => {
 	};
 	const location = useLocation();
 
+	const me = useAppSelector((state) => state.user.user);
+	let isAdmin = me.attributes.isAdmin;
+	if (isAdmin == undefined) {
+		isAdmin = false;
+	}
+	const paths = !isAdmin ? my_paths.slice(1, -1) : my_paths;
 
 	return (
 		<div className="mx-auto space-x-1 navbar max-w-none">
 			<div className="px-2 mx-2 navbar-start">
-				<span className="text-lg font-bold sr-only md:not-sr-only">
+				<Link className="text-lg font-bold sr-only md:not-sr-only" to={"/"}>
 					Admin ManagerX
-				</span>
+				</Link>
 				<span className="text-lg font-bold md:sr-only">
-					{getName(location.pathname)}
+					{paths.find((path) => path.ref == location.pathname)?.tag ||
+						"Admin ManagerX"}
 				</span>
 			</div>
 			<div className="hidden px-2 mx-2 navbar-center md:flex">
 				<div className="flex items-stretch">
-					{Object.values(Paths).map((key) => {
-						return (
-							<Link
-								className={`btn btn-ghost btn-sm rounded-btn ${
-									location.pathname == key && "btn-active"
-								}`}
-								to={key}
-								key={key}
-							>
-								{getName(key)}
-							</Link>
-						);
-					})}
+					{paths.map((path) => (
+						<Link
+							className={`btn btn-ghost btn-sm rounded-btn ${
+								location.pathname == path.ref && "btn-active"
+							}`}
+							to={path.ref}
+							key={path.tag}
+						>
+							{path.tag}
+						</Link>
+					))}
 				</div>
 			</div>
 			<div className="navbar-end">
@@ -99,7 +110,7 @@ const MyNavigationBar: FC<Props> = (props) => {
 						tabIndex={0}
 						className="p-2 shadow menu dropdown-content bg-base-300 rounded-box w-52"
 					>
-						<AllDrinks />
+						<AllDrinks paths={paths} />
 					</ul>
 				</div>
 				<div className="dropdown dropdown-end">

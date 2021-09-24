@@ -5,7 +5,7 @@ import DrinkModal from "../../components/modals/DrinkModal";
 import { IoMdAdd } from "react-icons/io";
 import DrinkItem from "../../components/drink/Drinkitem";
 import { BsSearch } from "react-icons/bs";
-import SearchModal from "../../components/modals/SearchModal";
+import SearchModal from "../../components/modals/SearchDrinkModal";
 import { useLocation } from "react-router";
 
 export function useQuery() {

@@ -55,7 +55,10 @@ const PrivateContainer: FC = (props) => {
 					</div>
 				</div>
 				<div>
-					<p>Copyright © 2021 - All right reserved by fsarmientod@uni.pe</p>
+					<p>
+						Copyright © 2021 - All right reserved by{" "}
+						<a href="https://github.com/sarmientoF">Sarmiento Fernando</a>
+					</p>
 				</div>
 			</footer>
 		</main>

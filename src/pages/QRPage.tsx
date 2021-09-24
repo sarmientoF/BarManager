@@ -1,7 +1,7 @@
 import React from "react";
 import QrReader from "react-qr-reader";
 import PrivateContainer from "../components/common/PrivateContainer";
-import SearchModal from "../components/modals/SearchModal";
+import SearchModal from "../components/modals/SearchDrinkModal";
 
 interface Props {}
 

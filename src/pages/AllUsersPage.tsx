@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { useAppSelector } from "../app/hooks";
 import PrivateContainer from "../components/common/PrivateContainer";
-import SearchModal from "../components/modals/SearchModal";
-import UserItem from "../components/user/UserItem";
+
 import { useQuery } from "./drinks/DrinksPage";
 import { BsSearch } from "react-icons/bs";
 import SearchQRModal from "../components/modals/SearchQRModal";
 import SmallUserCard from "../components/user/SmallUserCard";
+import OnlineUserCard from "../components/user/OnlineUserCard";
 
 interface Props {}
 
@@ -20,11 +20,19 @@ const AllUsersPage = (props: Props) => {
 	let customers = useAppSelector((state) => state.user.customers);
 
 	if (filterName) {
-		customers = customers.filter((customer) =>
-			Object.values(customer.attributes).some(
+		customers = customers.filter((customer) => {
+			const isDrink = customer.relationships?.orders?.filter((order) =>
+				order.drinkCode.includes(filterName)
+			).length;
+			const isAttribute = Object.values({
+				...customer.attributes,
+				photo: "",
+			}).some(
 				(e) => typeof e == "string" && e.toLowerCase().includes(filterName)
-			)
-		);
+			);
+
+			return isDrink || isAttribute;
+		});
 	}
 
 	if (filterQR) {
@@ -51,9 +59,9 @@ const AllUsersPage = (props: Props) => {
 			</div>
 			<div className="hero min-h-screen bg-base-200">
 				<div className="text-center w-full p-4">
-					<div className="grid grid-cols-1 lg:grid-cols-2 gap-2 place-content-center items-stretch ">
+					<div className="grid grid-cols-1 gap-2  justify-items-center ">
 						{customers.slice((page - 1) * n, page * n).map((customer) => (
-							<SmallUserCard key={customer.uid} user={customer} />
+							<OnlineUserCard key={customer.uid} user={customer} />
 						))}
 					</div>
 					<div className="btn-group w-full flex justify-center pt-8">

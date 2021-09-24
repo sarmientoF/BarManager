@@ -7,6 +7,7 @@ import UploadImage from "../common/UploadImage";
 import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
 import ja from "date-fns/locale/ja";
 import "react-datepicker/dist/react-datepicker.css";
+import { converJpNumbers, convertHalfString } from "../../utils/Half2Kana";
 // import "react-datepicker/dist/react-datepicker-cssmodules.css";
 
 registerLocale("ja", ja);
@@ -57,10 +58,10 @@ const UpdateModal = ({ user, open, setOpen }: Props) => {
 		setLoading(true);
 		await updateDoc(doc(database.users, uid), {
 			updatedAt: database.getCurrentTimestamp(),
-			"attributes.name": name,
-			"attributes.furigana": furigana,
+			"attributes.name": convertHalfString(name),
+			"attributes.furigana": convertHalfString(furigana),
 			"attributes.birthday": _birthday,
-			"attributes.phone": phone,
+			"attributes.phone": converJpNumbers(phone),
 			"attributes.memo": memo,
 			"attributes.introducer": introducer,
 			"attributes.job": job,
@@ -74,9 +75,6 @@ const UpdateModal = ({ user, open, setOpen }: Props) => {
 		setOpen(false);
 	};
 
-	const tabs = ["タブ 1", "タブ 2", "タブ 3"];
-
-	const [index, setIndex] = useState(0);
 	return (
 		<div className={`modal ${"modal-open"} transition-all`}>
 			<span
@@ -86,22 +84,9 @@ const UpdateModal = ({ user, open, setOpen }: Props) => {
 				}}
 			></span>
 
-			<div className="modal-box">
-				<div className="card-body py-0">
-					<div className="tabs">
-						{tabs.map((tab, i) => (
-							<a
-								onClick={() => {
-									setIndex(i);
-								}}
-								className={`tab tab-lifted ${i == index && "tab-active"}`}
-								key={i}
-							>
-								{tab}
-							</a>
-						))}
-					</div>
-					<div className={`${index != 0 && "sr-only"}`}>
+			<div className="modal-box max-w-xl">
+				<div className="card-body py-0 ">
+					<div className="grid grid-cols-2 gap-4">
 						<div className="form-control">
 							<label className="label">
 								<span className="label-text">名前</span>
@@ -151,15 +136,16 @@ const UpdateModal = ({ user, open, setOpen }: Props) => {
 								<span className="label-text">電話番号</span>
 							</label>
 							<input
-								type="text"
+								type="tel"
 								placeholder="電話番号"
-								className="input input-bordered"
+								minLength={4}
+								maxLength={14}
+								pattern={"[0-9]{4,14}"}
+								className="input input-bordered invalid:input-error"
 								defaultValue={user.attributes.phone}
 								ref={phoneRef}
 							/>
 						</div>
-					</div>
-					<div className={`${index != 1 && "sr-only"}`}>
 						<div className="form-control">
 							<label className="label">
 								<span className="label-text">メモ</span>
@@ -196,8 +182,6 @@ const UpdateModal = ({ user, open, setOpen }: Props) => {
 								ref={jobRef}
 							/>
 						</div>
-					</div>
-					<div className={`${index != 2 && "sr-only"}`}>
 						<div className="form-control">
 							<label className="label">
 								<span className="label-text">画像</span>

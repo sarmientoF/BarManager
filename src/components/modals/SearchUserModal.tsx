@@ -1,28 +1,30 @@
 import React, { useRef, useState } from "react";
 import { useHistory } from "react-router";
+import { convertNormal } from "../../utils/Half2Kana";
 
 interface Props {
 	path: string;
 	open: boolean;
 	setOpen: (state: boolean) => void;
-	various?: boolean;
 }
 
-const SearchModal = ({ path, open, setOpen, various = false }: Props) => {
+const SearchUserModal = ({ path, open, setOpen }: Props) => {
 	const [loading, setLoading] = useState(false);
 
 	const valueRef = useRef<HTMLInputElement>(null);
 	const history = useHistory();
 	const handleSearch = async () => {
 		setLoading(true);
-		history.push(`${path}?value=${valueRef.current?.value}`);
+		history.push(`${path}?value=${convertNormal(valueRef.current?.value)}`);
 		setLoading(false);
 		setOpen(false);
 	};
 
 	const handleClose = () => {
 		setOpen(false);
+		setTab(false);
 	};
+	const [tab, setTab] = useState(false);
 	return (
 		<div className={`modal ${open && "modal-open"} transition-all`}>
 			<span className="absolute w-full h-full" onClick={handleClose}></span>
@@ -31,11 +33,11 @@ const SearchModal = ({ path, open, setOpen, various = false }: Props) => {
 				<div className="card-body">
 					<div className="form-control">
 						<label className="label">
-							<span className="label-text">{various ? "名前など": "名前"}</span>
+							<span className="label-text">名前など</span>
 						</label>
 						<input
 							type="text"
-							placeholder={various ? "ボトル番号、名前、銘柄名" : "名前"}
+							placeholder="名前,名前(カナ),会社名,その他"
 							className="input input-bordered"
 							ref={valueRef}
 							required
@@ -56,4 +58,4 @@ const SearchModal = ({ path, open, setOpen, various = false }: Props) => {
 	);
 };
 
-export default SearchModal;
+export default SearchUserModal;

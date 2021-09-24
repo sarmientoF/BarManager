@@ -13,6 +13,7 @@ interface Attributes {
 	introducer: string;
 	job: string;
 	isInStore: boolean;
+	isAdmin?: boolean
 }
 
 export interface Order {

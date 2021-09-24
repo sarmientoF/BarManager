@@ -12,7 +12,7 @@ import { OrderState, UserState } from "../../features/user/user-slice";
 import { database, db } from "../../firebase";
 
 interface Props {
-	order: OrderState;
+	order: {uid: string, userId: string} ;
 	open: boolean;
 	setOpen: (state: boolean) => void;
 }
@@ -25,7 +25,7 @@ const DeleteOrderModal = ({ order, open, setOpen }: Props) => {
 		setLoading(true);
 
 		const orderRef = doc(db, "orders", order.uid);
-		const userRef = doc(db, "users", order.attributes.userId);
+		const userRef = doc(db, "users", order.userId);
 		await updateDoc(userRef, {
 			["relationships.orders." + order.uid]: deleteField(),
 		});

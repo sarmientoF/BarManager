@@ -5,7 +5,7 @@ import { DrinkState } from "../../features/user/user-slice";
 import { BiEdit } from "react-icons/bi";
 
 import UpdateDrinkModal from "../modals/UpdateDrinkModal";
-import DeleteDrinkModal from "../modals/DeleteDrinkModal copy";
+import DeleteDrinkModal from "../modals/DeleteDrinkModal";
 
 interface Props {
 	drink: DrinkState;
@@ -16,20 +16,6 @@ const DrinkItem = ({ drink }: Props) => {
 
 	const [open, setOpen] = useState(false);
 	const [del, setDel] = useState(false);
-	const [loading, setLoading] = useState(false);
-	const createdAt = new Date(drink.createdAt);
-	const updatedAt = new Date(drink.updatedAt);
-
-	const isNew = createdAt.toDateString() === updatedAt.toDateString();
-
-	const handleInStore = async () => {
-		setLoading(true);
-		// await updateDoc(doc(database.users, uid), {
-		// 	updatedAt: database.getCurrentTimestamp(),
-		// 	"attributes.isInStore": !drink.attributes.isInStore,
-		// });
-		setLoading(false);
-	};
 
 	return (
 		<>
@@ -57,7 +43,6 @@ const DrinkItem = ({ drink }: Props) => {
 				<div className="card-body justify-end">
 					<h2 className="card-title  justify-self-start line-clamp-1">
 						{drink.attributes.name || "No name yet"}
-						{/* {isNew && <div className="badge mx-2 bg-green-400">NEW</div>} */}
 					</h2>
 					<p className="overflow-ellipsis flex-grow overflow-hidden line-clamp-2">
 						{drink.attributes.memo}

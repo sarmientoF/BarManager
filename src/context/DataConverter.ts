@@ -23,6 +23,7 @@ interface UserAttributes {
 	photo?: string;
 	introducer?: string;
 	isInStore?: boolean;
+	isAdmin?: boolean
 }
 
 interface Order {
