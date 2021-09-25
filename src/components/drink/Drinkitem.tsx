@@ -25,7 +25,7 @@ const DrinkItem = ({ drink }: Props) => {
 				<figure className="relative inline-flex shadow-2xl">
 					<div className="flex justify-around">
 						<img
-							src={drink.attributes.url}
+							src={drink.attributes.url || "https://picsum.photos/400/400"}
 							alt=""
 							className="object-cover w-full h-64"
 						/>

@@ -91,7 +91,7 @@ const AddOrderModal = ({ user, open, setOpen }: Props) => {
 							onChange={(val) => {
 								setDrinkCode(val.currentTarget.value);
 								if (ordersIDs.some((id) => id == val.currentTarget.value)) {
-									setError("すでにこのボトル番号は使用されていま");
+									setError("すでにこのボトル番号は使用されています");
 								} else {
 									setError("");
 								}

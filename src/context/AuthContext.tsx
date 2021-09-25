@@ -37,8 +37,8 @@ export const useAuth = () => {
 };
 
 const actionCodeSettings = {
-	// url: "http://localhost:3000/verify_signin",
-	url: "https://admin-barmanagerx.web.app/verify_signin",
+	url: "http://localhost:3000/verify_signin",
+	// url: "https://admin-barmanagerx.web.app/verify_signin",
 	handleCodeInApp: true,
 };
 
@@ -78,7 +78,9 @@ export const AuthProvider: FC<Props> = (props) => {
 					await setDoc(doc(db, "admins", uid), {
 						createdAt: database.getCurrentTimestamp(),
 						updatedAt: database.getCurrentTimestamp(),
-						"attributes.isAdmin": path == "admins",
+						attributes: {
+							isAdmin: path == "admins",
+						},
 						uid: uid,
 					});
 				}

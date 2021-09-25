@@ -20,6 +20,7 @@ import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 import AllOrdersPage from "./pages/AllOrdersPage";
 import QRPage from "./pages/QRPage";
 import AddStaffPage from "./pages/AddStaffPage";
+import CreateUserPage from "./pages/CreateUserPage";
 registerPlugin(
 	FilePondPluginImageExifOrientation,
 	FilePondPluginImagePreview,
@@ -27,13 +28,19 @@ registerPlugin(
 );
 
 function App() {
-	const count = useAppSelector((state) => state.counter.value);
-	const dispatch = useAppDisptach();
+	// const count = useAppSelector((state) => state.counter.value);
+	// const dispatch = useAppDisptach();
 
-	const [numDogs, setNumDogs] = useState(10);
-	const { data = [], isFetching } = useFetchBreedsQuery(numDogs);
+	// const [numDogs, setNumDogs] = useState(10);
+	// const { data = [], isFetching } = useFetchBreedsQuery(numDogs);
 
-	const [files, setFiles] = useState([]);
+	// const [files, setFiles] = useState([]);
+
+	const me = useAppSelector((state) => state.user.user);
+	let isAdmin = me.attributes.isAdmin;
+	if (isAdmin == undefined) {
+		isAdmin = false;
+	}
 	return (
 		<Switch>
 			{/* <Redirect exact from="/" to="/all" /> */}
@@ -41,9 +48,7 @@ function App() {
 			<PrivateRoute exact path="/">
 				<DashboardPage />
 			</PrivateRoute>
-			<PrivateRoute exact path="/all">
-				<AllUsersPage />
-			</PrivateRoute>
+
 			<PrivateRoute exact path="/new">
 				<NewUsersPage />
 			</PrivateRoute>
@@ -51,19 +56,27 @@ function App() {
 				<OnlineUsersPage />
 			</PrivateRoute>
 
-			<PrivateRoute exact path="/add">
-				<AddStaffPage />
-			</PrivateRoute>
+			{isAdmin && (
+				<PrivateRoute exact path="/all">
+					<AllUsersPage />
+				</PrivateRoute>
+			)}
+			{isAdmin && (
+				<PrivateRoute exact path="/add">
+					<AddStaffPage />
+				</PrivateRoute>
+			)}
 
 			<PrivateRoute path="/drinks">
 				<DrinksPage />
 			</PrivateRoute>
-			<PrivateRoute path="/qr">
-				<QRPage />
-			</PrivateRoute>
 
 			<PrivateRoute path="/orders">
 				<AllOrdersPage />
+			</PrivateRoute>
+
+			<PrivateRoute exact path="/createUser">
+				<CreateUserPage />
 			</PrivateRoute>
 
 			<Route path="/signin">

@@ -1,18 +1,10 @@
 import { arrayUnion, setDoc, updateDoc } from "@firebase/firestore";
-import {
-	addDoc,
-	collection,
-	deleteDoc,
-	deleteField,
-	doc,
-} from "firebase/firestore";
+import { deleteDoc, deleteField, doc } from "firebase/firestore";
 import React, { FormEvent, useRef, useState } from "react";
-import { useAppSelector } from "../../app/hooks";
-import { OrderState, UserState } from "../../features/user/user-slice";
-import { database, db } from "../../firebase";
+import { db } from "../../firebase";
 
 interface Props {
-	order: {uid: string, userId: string} ;
+	order: { uid: string; userId: string };
 	open: boolean;
 	setOpen: (state: boolean) => void;
 }
