@@ -53,7 +53,6 @@ const UpdateModal = ({ user, open, setOpen }: Props) => {
 
 		const newUrl = url || user.attributes.photo || "";
 
-		console.log("new url", newUrl);
 
 		setLoading(true);
 		await updateDoc(doc(database.users, uid), {

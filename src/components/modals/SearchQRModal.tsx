@@ -1,6 +1,9 @@
+import { updateDoc } from "@firebase/firestore";
+import { doc } from "firebase/firestore";
 import React, { useRef, useState } from "react";
 import QrReader from "react-qr-reader";
 import { useHistory } from "react-router";
+import { database } from "../../firebase";
 
 interface Props {
 	path: string;
@@ -20,8 +23,12 @@ const SearchQRModal = ({ path, open, setOpen }: Props) => {
 		setOpen(false);
 	};
 
-	const handleOnScan = (data: string | null) => {
+	const handleOnScan = async (data: string | null) => {
 		if (data) {
+			await updateDoc(doc(database.users, data), {
+				updatedAt: database.getCurrentTimestamp(),
+				"attributes.isInStore": true,
+			});
 			history.push(`${path}?qr=${data}`);
 			handleClose();
 		}

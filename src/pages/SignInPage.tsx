@@ -7,7 +7,7 @@ interface Props {}
 
 const SignInPage = (props: Props) => {
 	const [loading, setLoading] = useState(false);
-	const [error, setError] = useState("");
+	const [message, setMessage] = useState<{message: string, success?: boolean}>({message: ""})
 	const emailRef = useRef<HTMLInputElement>(null);
 	const { currentUser } = useAuth();
 
@@ -18,11 +18,9 @@ const SignInPage = (props: Props) => {
 		if (!email) return;
 		setLoading(true);
 		window.localStorage.setItem("emailForSignIn", email);
-		try {
-			await sendSignInLink(email);
-		} catch (error) {
-			setError("🚨Coudn't send email");
-		}
+		const res = await sendSignInLink(email);
+		
+		setMessage(res)
 	};
 
 	if (currentUser) {
@@ -46,10 +44,10 @@ const SignInPage = (props: Props) => {
 				</div>
 				<div className="card flex-shrink-0 w-full max-w-sm  bg-base-100  shadow-2xl filter drop-shadow-2xl ">
 					<form className="card-body" onSubmit={handleSignIn}>
-						{error && (
-							<div className="alert alert-error">
+						{message.message && (
+							<div className={["alert", message.success ? "alert-success" : "alert-error"].join(" ")}>
 								<div className="flex-1">
-									<label>{error}</label>
+									<label>{message.message}</label>
 								</div>
 							</div>
 						)}

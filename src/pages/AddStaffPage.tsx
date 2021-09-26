@@ -1,4 +1,4 @@
-import { arrayUnion, collection, updateDoc } from "@firebase/firestore";
+import { arrayUnion, collection, setDoc, updateDoc } from "@firebase/firestore";
 import { doc } from "firebase/firestore";
 import React, { useRef, useState } from "react";
 import QrReader from "react-qr-reader";
@@ -17,19 +17,29 @@ const AddStaffPage = (props: Props) => {
 	const roleRef = useRef<HTMLSelectElement>(null);
 	const emailRef = useRef<HTMLInputElement>(null);
 
+	const [message, setMessage] = useState<{
+		message: string;
+		success?: boolean;
+	}>({ message: "" });
+
 	const [loading, setLoading] = useState(false);
 
-	const handleAdd = () => {
+	const handleAdd = async () => {
 		setLoading(true);
 		const role = roleRef.current?.value;
 		const email = emailRef.current?.value;
 		if (!role || !email) return;
-		console.log(email, role);
 
 		// return;
-		updateDoc(doc(database.managers, role), {
-			emails: arrayUnion(email),
-		});
+		try {
+			await setDoc(doc(database.roles, email), {
+				isAdmin: "admins" == role,
+			});
+
+			setMessage({ success: true, message: "🚀 追加しました!" });
+		} catch (error) {
+			setMessage({ success: true, message: "🚨 サーバーエラー" });
+		}
 		setOpen(true);
 		setLoading(false);
 	};
@@ -39,19 +49,22 @@ const AddStaffPage = (props: Props) => {
 		<PrivateContainer>
 			{open && (
 				<div
-					className="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative"
+					className={[
+						"alert px-4 py-3 rounded relative flex-row",
+						message.success ? "alert-success" : "alert-error",
+					].join(" ")}
 					role="alert"
 				>
-					<strong className="font-bold">追加しました!</strong>
+					<strong className="font-bold">{message.message}</strong>
 
 					<span
-						className="absolute top-0 bottom-0 right-0 px-4 py-3"
+						className=""
 						onClick={() => {
 							setOpen(false);
 						}}
 					>
 						<svg
-							className="fill-current h-6 w-6 text-blue-700"
+							className="fill-current h-6 w-6 "
 							role="button"
 							xmlns="http://www.w3.org/2000/svg"
 							viewBox="0 0 20 20"

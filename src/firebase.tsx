@@ -32,7 +32,7 @@ export const database = {
 	folders: collection(db, "folders"),
 	admins: collection(db, "admins"),
 	employees: collection(db, "employees"),
-	managers: collection(db, "managers"),
+	roles: collection(db, "roles"),
 	files: collection(db, "files"),
 	formatDoc: (doc: any) => {
 		return { id: doc.id, ...doc.data() };

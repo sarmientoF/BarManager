@@ -18,13 +18,12 @@ const DeleteOrderModal = ({ order, open, setOpen }: Props) => {
 
 		const orderRef = doc(db, "orders", order.uid);
 		const userRef = doc(db, "users", order.userId);
+		setLoading(false);
+		setOpen(false);
 		await updateDoc(userRef, {
 			["relationships.orders." + order.uid]: deleteField(),
 		});
 		await deleteDoc(orderRef);
-
-		setLoading(false);
-		setOpen(false);
 	};
 
 	const handleClose = () => {

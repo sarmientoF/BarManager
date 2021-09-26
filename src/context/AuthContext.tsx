@@ -9,6 +9,7 @@ import {
 	onSnapshot,
 	query,
 	setDoc,
+	updateDoc,
 } from "firebase/firestore";
 import React, { FC, useContext, useEffect } from "react";
 import { useState } from "react";
@@ -25,12 +26,20 @@ import { userConverter, UserData } from "./DataConverter";
 import { drinkConverter, DrinkData } from "./DrinkConverter";
 import { orderConverter, OrderData } from "./OrderConverter";
 
-const AuthCotnext = React.createContext({
+const initialState = {
 	currentUser: null as User | null,
-	signInWithLink: {} as () => Promise<boolean>,
-	sendSignInLink: {} as (email: string) => Promise<void>,
+	isAdmin: false,
+	signInWithLink: {} as () => Promise<{
+		success: boolean;
+		message: string;
+	}>,
+	sendSignInLink: {} as (email: string) => Promise<{
+		message: string;
+		success: boolean;
+	}>,
 	logout: {} as () => Promise<void>,
-});
+};
+export const AuthCotnext = React.createContext(initialState);
 
 export const useAuth = () => {
 	return useContext(AuthCotnext);
@@ -46,6 +55,7 @@ interface Props {}
 export const AuthProvider: FC<Props> = (props) => {
 	const [currentUser, setCurrentUser] = useState<User | null>(null);
 	const [loading, setLoading] = useState(true);
+	const [isAdmin, setisAdmin] = useState(initialState.isAdmin);
 	const dispatch = useAppDisptach();
 
 	const signInWithLink = async () => {
@@ -54,47 +64,50 @@ export const AuthProvider: FC<Props> = (props) => {
 			if (!email) {
 				email = window.prompt("Please provide your email for confirmation");
 			}
-			if (!email) return false;
+			if (!email) return { success: false, message: "🚨 メールが有効でない" };
 			try {
-				const querySnapshot = await getDocs(collection(db, "managers"));
-				let path = "";
-				querySnapshot.forEach((doc) => {
-					const emails = doc.data().emails;
-					if (emails.includes(email)) path = doc.id;
-				});
+				const userSnap = await getDoc(doc(db, "roles", email));
 
-				if (!path) return false;
+				if (userSnap.exists()) {
+					const {
+						user: { uid },
+					} = await signInWithEmailLink(auth, email, window.location.href);
+					window.localStorage.removeItem("emailForSignIn");
 
-				const {
-					user: { uid },
-				} = await signInWithEmailLink(auth, email, window.location.href);
-				window.localStorage.removeItem("emailForSignIn");
-
-				const userRef = doc(db, path, "uid");
-				const userSnap = await getDoc(userRef);
-				if (!userSnap.exists()) {
-					console.log("🚨 No such document!");
-
-					await setDoc(doc(db, "admins", uid), {
-						createdAt: database.getCurrentTimestamp(),
-						updatedAt: database.getCurrentTimestamp(),
-						attributes: {
-							isAdmin: path == "admins",
-						},
-						uid: uid,
-					});
+					try {
+						const adminSnap = await getDoc(doc(db, "admins", uid));
+						if (!adminSnap.exists()) {
+							await setDoc(doc(db, "admins", uid), {
+								createdAt: database.getCurrentTimestamp(),
+								updatedAt: database.getCurrentTimestamp(),
+								uid: uid,
+							});
+						}
+						return { success: true, message: "ログイン成功" };
+					} catch (e) {
+						return { success: false, message: "🚨 サーバーエラー" };
+					}
 				}
-				return true;
+				return { success: false, message: "スタッフとして登録されていない" };
 			} catch (e) {
 				console.log(e);
-				return false;
+				return { success: false, message: "🚨 サーバーエラー" };
 			}
 		}
-		return false;
+		return { success: false, message: "🚨 リンクが有効でない" };
 	};
 
-	const sendSignInLink = (email: string) => {
-		return sendSignInLinkToEmail(auth, email, actionCodeSettings);
+	const sendSignInLink = async (email: string) => {
+		const userSnap = await getDoc(doc(db, "roles", email));
+		if (userSnap.exists()) {
+			try {
+				await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+				return { message: "送信成功", success: true };
+			} catch (error) {
+				return { message: "メールが送れない", success: false };
+			}
+		}
+		return { message: "スタッフとして登録されていない", success: false };
 	};
 
 	const logout = () => {
@@ -125,6 +138,14 @@ export const AuthProvider: FC<Props> = (props) => {
 					}
 				}
 			);
+			if (currentUser.email) {
+				onSnapshot(doc(db, "roles", currentUser.email), (doc) => {
+					let data = doc.data();
+					if (data) {
+						setisAdmin(data.isAdmin);
+					}
+				});
+			}
 
 			const customersQuery = query(collection(db, "users")).withConverter(
 				userConverter
@@ -167,6 +188,7 @@ export const AuthProvider: FC<Props> = (props) => {
 
 	const context = {
 		currentUser,
+		isAdmin,
 		signInWithLink,
 		sendSignInLink,
 		logout,

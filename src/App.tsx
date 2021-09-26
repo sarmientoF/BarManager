@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useAppDisptach, useAppSelector } from "./app/hooks";
 import { useFetchBreedsQuery } from "./features/dogs/dogs-api-slice";
 import { Redirect, Route, Switch } from "react-router-dom";
@@ -18,9 +18,9 @@ import FilePondPluginImagePreview from "filepond-plugin-image-preview";
 import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 import AllOrdersPage from "./pages/AllOrdersPage";
-import QRPage from "./pages/QRPage";
 import AddStaffPage from "./pages/AddStaffPage";
 import CreateUserPage from "./pages/CreateUserPage";
+import { AuthCotnext } from "./context/AuthContext";
 registerPlugin(
 	FilePondPluginImageExifOrientation,
 	FilePondPluginImagePreview,
@@ -36,11 +36,8 @@ function App() {
 
 	// const [files, setFiles] = useState([]);
 
-	const me = useAppSelector((state) => state.user.user);
-	let isAdmin = me.attributes.isAdmin;
-	if (isAdmin == undefined) {
-		isAdmin = false;
-	}
+	const { isAdmin } = useContext(AuthCotnext);
+
 	return (
 		<Switch>
 			{/* <Redirect exact from="/" to="/all" /> */}

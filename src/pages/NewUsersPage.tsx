@@ -11,8 +11,8 @@ interface Props {}
 const isNewUser = (user: UserState) => {
 	const createdAt = new Date(user.createdAt);
 	const updatedAt = new Date(user.updatedAt);
-	// return createdAt.getTime() === updatedAt.getTime();
-	return createdAt.toLocaleDateString() == new Date().toLocaleDateString();
+	return createdAt.getTime() === updatedAt.getTime();
+	// return createdAt.toLocaleDateString() == new Date().toLocaleDateString();
 };
 const NewUsersPage = (props: Props) => {
 	const customers = useAppSelector((state) => state.user.customers);
