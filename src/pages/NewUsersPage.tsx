@@ -1,21 +1,23 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { BsSearch } from "react-icons/bs";
-import { useAppSelector } from "../app/hooks";
 import PrivateContainer from "../components/common/PrivateContainer";
 import SearchUserModal from "../components/modals/SearchUserModal";
 import OnlineUserCard from "../components/user/OnlineUserCard";
-import { UserState } from "../features/user/user-slice";
+import { AuthCotnext } from "../context/AuthContext";
+import { MyUser, User } from "../data/data";
 import { useQuery } from "./drinks/DrinksPage";
 interface Props {}
 
-const isNewUser = (user: UserState) => {
+const isNewUser = (user: User) => {
 	const createdAt = new Date(user.createdAt);
 	const updatedAt = new Date(user.updatedAt);
 	return createdAt.getTime() === updatedAt.getTime();
 	// return createdAt.toLocaleDateString() == new Date().toLocaleDateString();
 };
 const NewUsersPage = (props: Props) => {
-	const customers = useAppSelector((state) => state.user.customers);
+	const {
+		data: { users: customers },
+	} = useContext(AuthCotnext);
 	let newCustomers = customers.filter((customer) => {
 		return isNewUser(customer);
 	});

@@ -1,7 +1,8 @@
-import { collection, doc, setDoc } from "firebase/firestore";
 import React, { useRef, useState } from "react";
-import { database, db } from "../../firebase";
+import { db } from "../../firebase";
 import UploadImage from "../common/UploadImage";
+import { v4 as uuid } from "uuid";
+import { ref, set } from "firebase/database";
 
 interface Props {
 	open: boolean;
@@ -12,23 +13,25 @@ const DrinkModal = ({ open, setOpen }: Props) => {
 	const [loading, setLoading] = useState(false);
 	const [files, setFiles] = useState<any>([]);
 	const [url, setUrl] = useState("");
-	const [newDrinkRef, setNewDrinkRef] = useState(doc(collection(db, "drinks")));
+	const [newDrinkRef, setNewDrinkRef] = useState(uuid());
 
 	const drinkNameRef = useRef<HTMLInputElement>(null);
 
 	const handleCreate = async () => {
 		setLoading(true);
 		const drinkName = drinkNameRef.current?.value;
+
 		if (!url || !drinkName) return;
+		const date = new Date().toISOString();
 		setLoading(true);
-		await setDoc(newDrinkRef, {
+		await set(ref(db, `drinks/${newDrinkRef}`), {
 			attributes: {
 				name: drinkName,
 				url: url,
 			},
-			createdAt: database.getCurrentTimestamp(),
-			updatedAt: database.getCurrentTimestamp(),
-			uid: newDrinkRef.id,
+			createdAt: date,
+			updatedAt: date,
+			uid: newDrinkRef,
 		});
 		setOpen(false);
 	};
@@ -64,7 +67,7 @@ const DrinkModal = ({ open, setOpen }: Props) => {
 						<label className="label">
 							<span className="label-text">画像</span>
 						</label>
-						<UploadImage setUrl={setUrl} refPath="drinks" uid={newDrinkRef.id} />
+						<UploadImage setUrl={setUrl} refPath="drinks" uid={newDrinkRef} />
 					</div>
 					<div className="form-control mt-4">
 						<input

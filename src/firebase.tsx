@@ -1,11 +1,5 @@
-import {
-	browserLocalPersistence,
-	getAuth,
-	setPersistence,
-	signInWithEmailLink,
-	User,
-} from "firebase/auth";
-import { getFirestore, collection, serverTimestamp } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { getDatabase, onDisconnect, ref } from "firebase/database";
 import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
 
@@ -23,23 +17,11 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-export const db = getFirestore();
-
-export const database = {
-	users: collection(db, "users"),
-	drinks: collection(db, "drinks"),
-	orders: collection(db, "orders"),
-	folders: collection(db, "folders"),
-	admins: collection(db, "admins"),
-	employees: collection(db, "employees"),
-	roles: collection(db, "roles"),
-	files: collection(db, "files"),
-	formatDoc: (doc: any) => {
-		return { id: doc.id, ...doc.data() };
-	},
-	getCurrentTimestamp: serverTimestamp,
-};
-
+export const db = getDatabase();
+const presenceRef = ref(db, "disconnectmessage");
+// Write a string when this client loses connection
+onDisconnect(presenceRef).set("I disconnected!");
+export const dbRef = ref(db);
 export const storage = getStorage(app);
 export const auth = getAuth();
 

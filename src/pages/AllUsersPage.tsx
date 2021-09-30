@@ -1,28 +1,28 @@
-import React, { useState } from "react";
-import { useAppSelector } from "../app/hooks";
+import React, { useContext, useState } from "react";
 import PrivateContainer from "../components/common/PrivateContainer";
 
 import { useQuery } from "./drinks/DrinksPage";
 import { BsSearch } from "react-icons/bs";
 import SearchQRModal from "../components/modals/SearchQRModal";
-import SmallUserCard from "../components/user/SmallUserCard";
 import OnlineUserCard from "../components/user/OnlineUserCard";
+import { AuthCotnext } from "../context/AuthContext";
 
 interface Props {}
 
 const AllUsersPage = (props: Props) => {
 	const [page, setPage] = useState(1);
-	const n = 50;
+	const n = 30;
 	let query = useQuery();
 	const filterName = query.get("value")?.toLowerCase();
 	const filterQR = query.get("qr");
 
-	let customers = useAppSelector((state) => state.user.customers);
+	let {
+		data: { users: customers },
+	} = useContext(AuthCotnext);
 
 	if (filterName) {
 		customers = customers.filter((customer) => {
 			const isDrink = customer.relationships?.orders?.filter((order) => {
-				console.log("order", order);
 				return order.drinkCode.includes(filterName);
 			}).length;
 			const isAttribute = Object.values({

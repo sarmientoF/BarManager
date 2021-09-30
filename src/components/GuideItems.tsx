@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import { useAppSelector } from "../app/hooks";
 import { AuthCotnext, AuthProvider } from "../context/AuthContext";
 import { my_paths } from "./common/MyNavigationBar";
 
@@ -9,7 +8,6 @@ function classNames(...classes: string[]) {
 }
 
 export default function GuideItems() {
-	const me = useAppSelector((state) => state.user.user);
 	const { isAdmin } = useContext(AuthCotnext);
 	const paths = !isAdmin ? my_paths.slice(1, -1) : my_paths;
 

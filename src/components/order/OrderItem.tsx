@@ -1,14 +1,14 @@
-import React, { ReactElement, useState } from "react";
-import { OrderState } from "../../features/user/user-slice";
+import React, { ReactElement, useContext, useState } from "react";
 import { createAvatar } from "@dicebear/avatars";
 import * as style from "@dicebear/avatars-initials-sprites";
-import { useAppSelector } from "../../app/hooks";
 
 import DeleteOrderModal from "../modals/DeleteOrderModal";
-import { doc, updateDoc } from "@firebase/firestore";
 import { db } from "../../firebase";
+import { Order } from "../../data/data";
+import { ref, update } from "firebase/database";
+import { AuthCotnext } from "../../context/AuthContext";
 interface Props {
-	order: OrderState;
+	order: Order;
 	filter: string;
 }
 
@@ -20,8 +20,8 @@ function OrderItem({ order, filter }: Props): ReactElement {
 	const [loading, setLoading] = useState(false);
 	const handleUse = async () => {
 		setLoading(true);
-		const orderRef = doc(db, "orders", order.uid);
-		await updateDoc(orderRef, {
+		const orderRef = ref(db, `orders/${order.uid}`);
+		await update(orderRef, {
 			"attributes.inUse": order.attributes.inUse
 				? !order.attributes.inUse
 				: true,
@@ -29,7 +29,9 @@ function OrderItem({ order, filter }: Props): ReactElement {
 
 		setLoading(false);
 	};
-	const { drinks, customers } = useAppSelector((state) => state.user);
+	const {
+		data: { drinks, users: customers },
+	} = useContext(AuthCotnext);
 	const drink = drinks.find((drink) => drink.uid == order.attributes.drinkId);
 
 	const customer = customers.find(

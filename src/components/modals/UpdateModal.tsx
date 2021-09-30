@@ -1,17 +1,18 @@
 import { updateDoc } from "@firebase/firestore";
 import { doc } from "firebase/firestore";
 import React, { useRef, useState } from "react";
-import { UserState } from "../../features/user/user-slice";
-import { database } from "../../firebase";
+import { db } from "../../firebase";
 import UploadImage from "../common/UploadImage";
 import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
 import ja from "date-fns/locale/ja";
 import "react-datepicker/dist/react-datepicker.css";
 import { converJpNumbers, convertHalfString } from "../../utils/Half2Kana";
+import { User } from "../../data/data";
+import { ref, update } from "firebase/database";
 
 registerLocale("ja", ja);
 interface Props {
-	user: UserState;
+	user: User;
 	open: boolean;
 	setOpen: (state: boolean) => void;
 }
@@ -52,18 +53,22 @@ const UpdateModal = ({ user, open, setOpen }: Props) => {
 
 		const newUrl = url || user.attributes.photo || "";
 
+		console.log("name", convertHalfString(name));
 
 		setLoading(true);
-		await updateDoc(doc(database.users, uid), {
-			updatedAt: database.getCurrentTimestamp(),
-			"attributes.name": convertHalfString(name),
-			"attributes.furigana": convertHalfString(furigana),
-			"attributes.birthday": _birthday,
-			"attributes.phone": converJpNumbers(phone),
-			"attributes.memo": memo,
-			"attributes.introducer": introducer,
-			"attributes.job": job,
-			"attributes.photo": newUrl,
+		await update(ref(db, `users/${uid}`), {
+			updatedAt: new Date().toISOString(),
+			attributes: {
+				name: convertHalfString(name),
+				furigana: convertHalfString(furigana),
+				birthday: _birthday,
+				phone: converJpNumbers(phone),
+				memo: memo,
+				isInStore: user.attributes.isInStore,
+				introducer: introducer,
+				job: job,
+				photo: newUrl,
+			},
 		});
 		setLoading(false);
 		setOpen(false);

@@ -1,10 +1,7 @@
 import React, { FC, useContext } from "react";
 import { FiMenu } from "react-icons/fi";
-import { IoIosNotificationsOutline } from "react-icons/io";
 import { MdAccountCircle } from "react-icons/md";
-import { useStore } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
-import { useAppSelector } from "../../app/hooks";
 import { AuthCotnext, useAuth } from "../../context/AuthContext";
 
 export const my_paths = [
@@ -67,7 +64,6 @@ const MyNavigationBar: FC<Props> = (props) => {
 	};
 	const location = useLocation();
 
-	const me = useAppSelector((state) => state.user.user);
 	const { isAdmin } = useContext(AuthCotnext);
 
 	const paths = !isAdmin ? my_paths.slice(1, -1) : my_paths;

@@ -1,7 +1,7 @@
-import { arrayUnion, setDoc, updateDoc } from "@firebase/firestore";
-import { deleteDoc, deleteField, doc } from "firebase/firestore";
 import React, { FormEvent, useRef, useState } from "react";
 import { db } from "../../firebase";
+import { v4 as uuid } from "uuid";
+import { ref, remove, set, update } from "firebase/database";
 
 interface Props {
 	order: { uid: string; userId: string };
@@ -16,14 +16,12 @@ const DeleteOrderModal = ({ order, open, setOpen }: Props) => {
 		e.preventDefault();
 		setLoading(true);
 
-		const orderRef = doc(db, "orders", order.uid);
-		const userRef = doc(db, "users", order.userId);
+		await remove(ref(db, `orders/${order.uid}`));
+		await remove(
+			ref(db, `users/${order.userId}/relationships/orders/${order.uid}`)
+		);
 		setLoading(false);
 		setOpen(false);
-		await updateDoc(userRef, {
-			["relationships.orders." + order.uid]: deleteField(),
-		});
-		await deleteDoc(orderRef);
 	};
 
 	const handleClose = () => {

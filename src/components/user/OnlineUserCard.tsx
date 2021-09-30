@@ -1,19 +1,20 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { createAvatar } from "@dicebear/avatars";
 import * as style from "@dicebear/avatars-initials-sprites";
-import { UserState } from "../../features/user/user-slice";
 
 import UpdateModal from "../modals/UpdateModal";
 import { updateDoc } from "@firebase/firestore";
-import { database } from "../../firebase";
+import { db } from "../../firebase";
 import { doc } from "firebase/firestore";
 import AddOrderModal from "../modals/AddOrderModal";
-import { useAppSelector } from "../../app/hooks";
 
 import DeleteOrderModal from "../modals/DeleteOrderModal";
+import { User } from "../../data/data";
+import { AuthCotnext } from "../../context/AuthContext";
+import { ref, update } from "firebase/database";
 
 interface Props {
-	user: UserState;
+	user: User;
 	showLeave?: boolean;
 	canDelete?: boolean;
 }
@@ -23,7 +24,9 @@ const OnlineUserCard = ({
 	showLeave = false,
 	canDelete = false,
 }: Props) => {
-	const drinks = useAppSelector((state) => state.user.drinks);
+	const {
+		data: { drinks },
+	} = useContext(AuthCotnext);
 
 	const uid = user.uid;
 
@@ -54,11 +57,11 @@ const OnlineUserCard = ({
 
 	const handleInStore = async () => {
 		setLoading(true);
-		await updateDoc(doc(database.users, uid), {
-			updatedAt: database.getCurrentTimestamp(),
-			"attributes.isInStore": !user.attributes.isInStore,
-		});
 		setLoading(false);
+		let updates: any = {};
+		updates["updatedAt"] = new Date().toISOString();
+		updates["attributes/isInStore"] = false;
+		await update(ref(db, `users/${uid}`), updates);
 	};
 	return (
 		<>
@@ -92,7 +95,6 @@ const OnlineUserCard = ({
 						{user.relationships?.orders?.map((order) => {
 							const drink = drinks.find((drink) => drink.uid == order.drinkId);
 							return (
-								// <div key={order.orderId}>
 								<li key={order.orderId} className="dropdown ">
 									{canDelete && (
 										<DeleteOrderModal
@@ -109,7 +111,7 @@ const OnlineUserCard = ({
 											tabIndex={0}
 											className="p-2 shadow menu  dropdown-content bg-base-100 rounded-box w-52"
 										>
-											<li>
+											<li key="delete">
 												<button
 													onClick={() => setDeleteOrder(true)}
 													className="btn btn-error text-white text-lg"

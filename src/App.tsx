@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react";
-import { useAppDisptach, useAppSelector } from "./app/hooks";
-import { useFetchBreedsQuery } from "./features/dogs/dogs-api-slice";
+
 import { Redirect, Route, Switch } from "react-router-dom";
 import PrivateRoute from "./components/common/PrivateRoute";
 import DashboardPage from "./pages/DashboardPage";
@@ -19,7 +18,6 @@ import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 import AllOrdersPage from "./pages/AllOrdersPage";
 import AddStaffPage from "./pages/AddStaffPage";
-import CreateUserPage from "./pages/CreateUserPage";
 import { AuthCotnext } from "./context/AuthContext";
 import ScreensPage from "./pages/ScreensPage";
 registerPlugin(
@@ -29,14 +27,6 @@ registerPlugin(
 );
 
 function App() {
-	// const count = useAppSelector((state) => state.counter.value);
-	// const dispatch = useAppDisptach();
-
-	// const [numDogs, setNumDogs] = useState(10);
-	// const { data = [], isFetching } = useFetchBreedsQuery(numDogs);
-
-	// const [files, setFiles] = useState([]);
-
 	const { isAdmin } = useContext(AuthCotnext);
 
 	return (
@@ -54,9 +44,6 @@ function App() {
 				<OnlineUsersPage />
 			</PrivateRoute>
 
-			<PrivateRoute exact path="/screen">
-				<ScreensPage />
-			</PrivateRoute>
 			{isAdmin && (
 				<PrivateRoute exact path="/all">
 					<AllUsersPage />
@@ -75,10 +62,6 @@ function App() {
 			<PrivateRoute path="/orders">
 				<AllOrdersPage />
 			</PrivateRoute>
-
-			<Route exact path="/createUser">
-				<CreateUserPage />
-			</Route>
 
 			<Route path="/signin">
 				<SignInPage />

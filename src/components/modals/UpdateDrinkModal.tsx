@@ -1,12 +1,11 @@
-import { updateDoc } from "@firebase/firestore";
-import { doc } from "firebase/firestore";
+import { ref, update } from "firebase/database";
 import React, { useRef, useState } from "react";
-import { DrinkState, UserState } from "../../features/user/user-slice";
-import { database } from "../../firebase";
+import { Bottle } from "../../data/data";
+import { db } from "../../firebase";
 import UploadImage from "../common/UploadImage";
 
 interface Props {
-	drink: DrinkState;
+	drink: Bottle;
 	open: boolean;
 	setOpen: (state: boolean) => void;
 }
@@ -27,12 +26,12 @@ const UpdateDrinkModal = ({ drink, open, setOpen }: Props) => {
 		const newUrl = url || drink.attributes.url || "";
 
 		setLoading(true);
-		await updateDoc(doc(database.drinks, uid), {
-			updatedAt: database.getCurrentTimestamp(),
-			"attributes.name": name,
-			"attributes.memo": memo,
-			"attributes.url": newUrl
-		});
+		let updates: any = {};
+		updates["updatedAt"] = new Date().toISOString();
+		updates["attributes/name"] = name;
+		updates["attributes/memo"] = memo;
+		updates["attributes/url"] = newUrl;
+		await update(ref(db, `bottles/${uid}`), updates);
 		setLoading(false);
 		setOpen(false);
 	};
@@ -81,7 +80,7 @@ const UpdateDrinkModal = ({ drink, open, setOpen }: Props) => {
 						<label className="label">
 							<span className="label-text">画像</span>
 						</label>
-						<UploadImage setUrl={setUrl} refPath={`drinks`}  uid={uid}/>
+						<UploadImage setUrl={setUrl} refPath={`drinks`} uid={uid} />
 					</div>
 
 					<div className="form-control mt-6 flex-row justify-around space-x-1">

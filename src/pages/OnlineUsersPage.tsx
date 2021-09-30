@@ -1,16 +1,18 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { BsSearch } from "react-icons/bs";
-import { useAppSelector } from "../app/hooks";
 import PrivateContainer from "../components/common/PrivateContainer";
 import SearchUserModal from "../components/modals/SearchUserModal";
 import OnlineUserCard from "../components/user/OnlineUserCard";
-import UserItem from "../components/user/UserItem";
+import { AuthCotnext } from "../context/AuthContext";
 import { useQuery } from "./drinks/DrinksPage";
 
 interface Props {}
 
 const OnlineUsersPage = (props: Props) => {
-	const customers = useAppSelector((state) => state.user.customers);
+	const {
+		data: { users: customers },
+	} = useContext(AuthCotnext);
+
 	let onlineCustomers = customers.filter(
 		(customer) => customer.attributes.isInStore
 	);
@@ -53,7 +55,12 @@ const OnlineUsersPage = (props: Props) => {
 				<div className="text-center w-full p-4 place-content-center">
 					<div className="grid grid-cols-1 gap-2  justify-items-center ">
 						{onlineCustomers.map((customer) => (
-							<OnlineUserCard canDelete showLeave key={customer.uid} user={customer} />
+							<OnlineUserCard
+								canDelete
+								showLeave
+								key={customer.uid}
+								user={customer}
+							/>
 						))}
 					</div>
 				</div>

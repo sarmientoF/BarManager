@@ -1,12 +1,11 @@
-import { arrayUnion, setDoc, updateDoc } from "@firebase/firestore";
-import { addDoc, collection, doc } from "firebase/firestore";
-import React, { FormEvent, useRef, useState } from "react";
-import { useAppSelector } from "../../app/hooks";
-import { UserState } from "../../features/user/user-slice";
-import { database, db } from "../../firebase";
-
+import { ref, set } from "firebase/database";
+import React, { FormEvent, useContext, useRef, useState } from "react";
+import { AuthCotnext } from "../../context/AuthContext";
+import { User } from "../../data/data";
+import { db } from "../../firebase";
+import { v4 as uuid } from "uuid";
 interface Props {
-	user: UserState;
+	user: User;
 	open: boolean;
 	setOpen: (state: boolean) => void;
 }
@@ -21,11 +20,11 @@ const AddOrderModal = ({ user, open, setOpen }: Props) => {
 
 	const [error, setError] = useState("");
 
-	const drinks = useAppSelector((state) => state.user.drinks);
+	const {
+		data: { drinks, orders },
+	} = useContext(AuthCotnext);
 
-	const ordersIDs = useAppSelector((state) =>
-		state.user.orders.map((order) => order.attributes.drinkCode)
-	);
+	const ordersIDs = orders.map((order) => order.attributes.drinkCode);
 
 	const handleUpdate = async (e: FormEvent) => {
 		e.preventDefault();
@@ -34,21 +33,23 @@ const AddOrderModal = ({ user, open, setOpen }: Props) => {
 		const drinkId = drinkRef.current?.value;
 
 		if (drinkId && drinkCode) {
-			const orderRef = await addDoc(database.orders, {
-				updatedAt: database.getCurrentTimestamp(),
-				createdAt: database.getCurrentTimestamp(),
+			const date = new Date().toISOString();
+			const order_uid = uuid();
+			await set(ref(db, `orders/${order_uid}`), {
+				createdAt: date,
+				updatedAt: date,
 				attributes: {
 					userId: uid,
 					drinkId: drinkId,
 					drinkCode: drinkCode,
 				},
+				uid: order_uid,
 			});
-			await updateDoc(doc(database.users, uid), {
-				updatedAt: database.getCurrentTimestamp(),
-				["relationships.orders." + orderRef.id]: {
-					drinkCode: drinkCode,
-					drinkId: drinkId,
-				},
+
+			await set(ref(db, `users/${uid}/relationships/orders/${order_uid}`), {
+				drinkCode: drinkCode,
+				drinkId: drinkId,
+				orderId: order_uid,
 			});
 		}
 

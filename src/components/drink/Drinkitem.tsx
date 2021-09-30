@@ -1,23 +1,20 @@
 import React, { useState } from "react";
 
-import { DrinkState } from "../../features/user/user-slice";
-
 import { BiEdit } from "react-icons/bi";
 import * as style from "@dicebear/avatars-initials-sprites";
 
 import UpdateDrinkModal from "../modals/UpdateDrinkModal";
-import DeleteDrinkModal from "../modals/DeleteDrinkModal";
 import { createAvatar } from "@dicebear/avatars";
+import { Bottle } from "../../data/data";
 
 interface Props {
-	drink: DrinkState;
+	drink: Bottle;
 }
 
 const DrinkItem = ({ drink }: Props) => {
 	const uid = drink.uid;
 
 	const [open, setOpen] = useState(false);
-	const [del, setDel] = useState(false);
 
 	const photo =
 		drink.attributes.url ||
@@ -29,7 +26,6 @@ const DrinkItem = ({ drink }: Props) => {
 	return (
 		<>
 			<UpdateDrinkModal drink={drink} open={open} setOpen={setOpen} />
-			<DeleteDrinkModal drink={drink} open={del} setOpen={setDel} />
 			<div className="card bordered text-left bg-base-100 shadow-lg">
 				<figure className="relative inline-flex shadow-2xl">
 					<div className="flex justify-around">

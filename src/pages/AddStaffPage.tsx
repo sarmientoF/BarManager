@@ -1,11 +1,8 @@
-import { arrayUnion, collection, setDoc, updateDoc } from "@firebase/firestore";
-import { doc } from "firebase/firestore";
+import { ref, set } from "firebase/database";
 import React, { useRef, useState } from "react";
-import QrReader from "react-qr-reader";
 import PrivateContainer from "../components/common/PrivateContainer";
-import SearchModal from "../components/modals/SearchDrinkModal";
-import { database, db } from "../firebase";
-
+import { db } from "../firebase";
+import { v4 as uuid } from "uuid";
 interface Props {}
 
 const roles = [
@@ -32,8 +29,9 @@ const AddStaffPage = (props: Props) => {
 
 		// return;
 		try {
-			await setDoc(doc(database.roles, email), {
+			set(ref(db, `roles/${uuid()}`), {
 				isAdmin: "admins" == role,
+				email: email,
 			});
 
 			setMessage({ success: true, message: "🚀 追加しました!" });

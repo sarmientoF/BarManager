@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useAppSelector } from "../../app/hooks";
+import React, { useContext, useEffect, useState } from "react";
 import PrivateContainer from "../../components/common/PrivateContainer";
 import DrinkModal from "../../components/modals/DrinkModal";
 import { IoMdAdd } from "react-icons/io";
@@ -7,8 +6,7 @@ import DrinkItem from "../../components/drink/Drinkitem";
 import { BsSearch } from "react-icons/bs";
 import SearchModal from "../../components/modals/SearchDrinkModal";
 import { useLocation } from "react-router";
-import { deleteDoc, doc } from "@firebase/firestore";
-import { db } from "../../firebase";
+import { AuthCotnext } from "../../context/AuthContext";
 
 export function useQuery() {
 	return new URLSearchParams(useLocation().search);
@@ -19,7 +17,9 @@ interface Props {}
 const DrinksPage = (props: Props) => {
 	let query = useQuery();
 	const filterName = query.get("value");
-	let drinks = useAppSelector((state) => state.user.drinks);
+	let {
+		data: { drinks },
+	} = useContext(AuthCotnext);
 
 	if (filterName) {
 		drinks = drinks.filter((drink) =>
@@ -28,15 +28,6 @@ const DrinksPage = (props: Props) => {
 	}
 	const [open, setOpen] = useState(false);
 	const [search, setSearch] = useState(false);
-
-	const deleteDrinks = () => {
-		drinks.forEach((drink) => {
-			if (!drink.attributes.url) {
-				const drinkRef = doc(db, "drinks", drink.uid);
-				deleteDoc(drinkRef);
-			}
-		});
-	};
 
 	useEffect(() => {
 		// deleteDrinks();

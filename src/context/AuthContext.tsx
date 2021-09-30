@@ -1,34 +1,34 @@
 import { signInWithEmailLink, User } from "@firebase/auth";
 import { isSignInWithEmailLink, sendSignInLinkToEmail } from "firebase/auth";
 import {
-	collection,
-	doc,
-	DocumentData,
-	getDoc,
-	getDocs,
-	onSnapshot,
+	child,
+	get,
+	limitToLast,
+	onChildAdded,
+	onChildChanged,
+	onChildRemoved,
+	onValue,
+	orderByChild,
+	orderByValue,
 	query,
-	setDoc,
-	updateDoc,
-} from "firebase/firestore";
-import React, { FC, useContext, useEffect } from "react";
+	ref,
+	set,
+	startAt,
+} from "firebase/database";
+import React, { FC, useCallback, useContext, useEffect } from "react";
 import { useState } from "react";
-import { useAppDisptach } from "../app/hooks";
-import {
-	UserState,
-	watchDrinks,
-	watchOrders,
-	watchUsers,
-} from "../features/user/user-slice";
-import { auth, database, db } from "../firebase";
-import { watchUser } from "../features/user/user-slice";
-import { userConverter, UserData } from "./DataConverter";
-import { drinkConverter, DrinkData } from "./DrinkConverter";
-import { orderConverter, OrderData } from "./OrderConverter";
+import { AllData, Bottle, MyUser, Order, Roles, StoreData } from "../data/data";
+
+import { auth, db, dbRef } from "../firebase";
 
 const initialState = {
 	currentUser: null as User | null,
 	isAdmin: false,
+	data: { users: [], drinks: [], orders: [] } as StoreData,
+	// users: [] as User[],
+	// drinks: [] as Bottle[],
+	// orders: [] as Order[],
+	// online: [] as String[],
 	signInWithLink: {} as () => Promise<{
 		success: boolean;
 		message: string;
@@ -52,11 +52,28 @@ const actionCodeSettings = {
 };
 
 interface Props {}
+
+const convertUser = (user: MyUser) => {
+	return {
+		...user,
+		relationships: {
+			orders: user.relationships
+				? Object.values(user.relationships?.orders)
+				: [],
+		},
+	};
+};
 export const AuthProvider: FC<Props> = (props) => {
 	const [currentUser, setCurrentUser] = useState<User | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [isAdmin, setisAdmin] = useState(initialState.isAdmin);
-	const dispatch = useAppDisptach();
+	const [data, setData] = useState<StoreData>(initialState.data);
+	console.log(
+		"Data changed",
+		data.users.length,
+		data.drinks.length,
+		data.orders.length
+	);
 
 	const signInWithLink = async () => {
 		if (isSignInWithEmailLink(auth, window.location.href)) {
@@ -66,23 +83,26 @@ export const AuthProvider: FC<Props> = (props) => {
 			}
 			if (!email) return { success: false, message: "🚨 メールが有効でない" };
 			try {
-				const userSnap = await getDoc(doc(db, "roles", email));
-
-				if (userSnap.exists()) {
+				const roles = (await (await get(child(dbRef, `roles`))).val()) as Roles;
+				const userVal = Object.values(roles).find((rol) => rol.email == email);
+				if (userVal) {
 					const {
 						user: { uid },
 					} = await signInWithEmailLink(auth, email, window.location.href);
 					window.localStorage.removeItem("emailForSignIn");
 
 					try {
-						const adminSnap = await getDoc(doc(db, "admins", uid));
+						const adminSnap = await get(child(dbRef, `admins/${uid}`));
+						const date = new Date().toISOString();
+
 						if (!adminSnap.exists()) {
-							await setDoc(doc(db, "admins", uid), {
-								createdAt: database.getCurrentTimestamp(),
-								updatedAt: database.getCurrentTimestamp(),
+							await set(ref(db, `admins/${uid}`), {
+								createdAt: date,
+								updatedAt: date,
 								uid: uid,
 							});
 						}
+
 						return { success: true, message: "ログイン成功" };
 					} catch (e) {
 						return { success: false, message: "🚨 サーバーエラー" };
@@ -98,7 +118,7 @@ export const AuthProvider: FC<Props> = (props) => {
 	};
 
 	const sendSignInLink = async (email: string) => {
-		const userSnap = await getDoc(doc(db, "roles", email));
+		const userSnap = await get(child(dbRef, `roles/${email}`));
 		if (userSnap.exists()) {
 			try {
 				await sendSignInLinkToEmail(auth, email, actionCodeSettings);
@@ -115,79 +135,165 @@ export const AuthProvider: FC<Props> = (props) => {
 	};
 	useEffect(() => {
 		const unsubscribe = auth.onAuthStateChanged((user) => {
+			console.log("changed user");
+
 			setCurrentUser(user);
 			setLoading(false);
 		});
 		return unsubscribe;
 	}, []);
 
-	useEffect(() => {
+	const initializeData = useCallback(async () => {
 		if (currentUser) {
-			onSnapshot(
-				doc(db, "admins", currentUser.uid).withConverter(userConverter),
-				(doc) => {
-					let data = doc.data();
+			const now = new Date().toISOString();
+			const snap = await get(dbRef);
+			const data_ = snap.val() as AllData;
+			const admin = Object.values(data_.roles).find(
+				(role) => role.email == currentUser.email
+			);
+			// console.log("data", data_);
+			setisAdmin(admin != undefined ? admin.isAdmin : false);
+			setData({
+				users: Object.values(data_.users).map((user) => {
+					return convertUser(user);
+				}),
+				drinks: Object.values(data_.bottles),
+				orders: Object.values(data_.orders),
+			});
+			// setisAdmin(true);
 
-					const source = doc.metadata.hasPendingWrites ? "Local" : "Server";
-					if (data) {
-						let payload = {
-							...data,
+			const usersRef = ref(db, "users");
+
+			const drinkRef = ref(db, "bottles");
+			const ordersRef = ref(db, "orders");
+			////////////// Users  //////////////
+			// return;
+
+			onChildAdded(
+				query(usersRef, orderByChild("createdAt"), startAt(now)),
+
+				(newUser) => {
+					console.log("added user", newUser.val().updatedAt);
+
+					setData((oldData) => {
+						return {
+							...oldData,
+							users: [convertUser(newUser.val()), ...oldData.users],
 						};
-
-						dispatch(watchUser(payload as any));
-					}
+					});
 				}
 			);
-			if (currentUser.email) {
-				onSnapshot(doc(db, "roles", currentUser.email), (doc) => {
-					let data = doc.data();
-					if (data) {
-						setisAdmin(data.isAdmin);
-					}
+
+			onChildChanged(usersRef, (changedUser) => {
+				console.log("updated user", changedUser);
+
+				setData((oldData) => {
+					let newData = { ...oldData };
+					const i = oldData.users.findIndex(
+						(user) => user.uid == changedUser.key
+					);
+					newData.users[i] = convertUser(changedUser.val());
+					return newData;
 				});
-			}
-
-			const customersQuery = query(collection(db, "users")).withConverter(
-				userConverter
-			);
-
-			onSnapshot(customersQuery, (querySnapshot) => {
-				const users: UserData[] = [];
-				querySnapshot.forEach((doc) => {
-					users.push(doc.data());
-				});
-
-				dispatch(watchUsers(users as any));
-			});
-			const drinksQuery = query(collection(db, "drinks")).withConverter(
-				drinkConverter
-			);
-
-			onSnapshot(drinksQuery, (querySnapshot) => {
-				const drinks: DrinkData[] = [];
-				querySnapshot.forEach((doc) => {
-					drinks.push(doc.data());
-				});
-
-				dispatch(watchDrinks(drinks as any));
 			});
 
-			const ordersQuery = query(collection(db, "orders")).withConverter(
-				orderConverter
-			);
-			onSnapshot(ordersQuery, (querySnapshot) => {
-				const orders: OrderData[] = [];
-				querySnapshot.forEach((doc) => {
-					orders.push({ ...doc.data(), uid: doc.id });
-				});
+			onChildRemoved(usersRef, (data) => {
+				console.log("deleted user", data);
 
-				dispatch(watchOrders(orders as any));
+				setData((oldData) => {
+					return {
+						...oldData,
+						users: oldData.users.filter((user) => user.uid != data.key),
+					};
+				});
+			});
+
+			////////////// Drinks  //////////////
+			onChildAdded(
+				query(drinkRef, orderByChild("createdAt"), startAt(now)),
+				(newDrink) => {
+					console.log("drinks added");
+
+					setData((oldData) => {
+						return {
+							...oldData,
+							drinks: [newDrink.val() as Bottle, ...oldData.drinks],
+						};
+					});
+				}
+			);
+
+			onChildChanged(drinkRef, (changedDrink) => {
+				console.log("updated drink", changedDrink);
+				setData((oldData) => {
+					let newData = { ...oldData };
+					const i = oldData.drinks.findIndex(
+						(drink) => drink.uid == changedDrink.key
+					);
+					newData.drinks[i] = changedDrink.val();
+
+					return newData;
+				});
+			});
+
+			onChildRemoved(drinkRef, (data) => {
+				console.log("deleted", data);
+
+				setData((oldData) => {
+					return {
+						...oldData,
+						drinks: oldData.drinks.filter((drink) => drink.uid != data.key),
+					};
+				});
+			});
+
+			////////////// Orders  //////////////
+			onChildAdded(
+				query(ordersRef, orderByChild("createdAt"), startAt(now)),
+				(newOrder) => {
+					console.log("order added");
+
+					setData((oldData) => {
+						return {
+							...oldData,
+							orders: [newOrder.val() as Order, ...oldData.orders],
+						};
+					});
+				}
+			);
+
+			onChildChanged(ordersRef, (changedOrder) => {
+				console.log("updated order", changedOrder);
+
+				setData((oldData) => {
+					let newData = { ...oldData };
+					const i = oldData.orders.findIndex(
+						(order) => order.uid == changedOrder.key
+					);
+					newData.orders[i] = changedOrder.val();
+					return newData;
+				});
+			});
+
+			onChildRemoved(ordersRef, (data) => {
+				console.log("deleted order", data);
+
+				setData((oldData) => {
+					return {
+						...oldData,
+						orders: oldData.orders.filter((order) => order.uid != data.key),
+					};
+				});
 			});
 		}
 	}, [currentUser]);
 
+	useEffect(() => {
+		initializeData();
+	}, [currentUser]);
 	const context = {
 		currentUser,
+		data,
 		isAdmin,
 		signInWithLink,
 		sendSignInLink,
