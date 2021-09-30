@@ -21,9 +21,10 @@ const AllUsersPage = (props: Props) => {
 
 	if (filterName) {
 		customers = customers.filter((customer) => {
-			const isDrink = customer.relationships?.orders?.filter((order) =>
-				order.drinkCode.includes(filterName)
-			).length;
+			const isDrink = customer.relationships?.orders?.filter((order) => {
+				console.log("order", order);
+				return order.drinkCode.includes(filterName);
+			}).length;
 			const isAttribute = Object.values({
 				...customer.attributes,
 				photo: "",

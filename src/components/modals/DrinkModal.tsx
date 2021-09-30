@@ -12,6 +12,7 @@ const DrinkModal = ({ open, setOpen }: Props) => {
 	const [loading, setLoading] = useState(false);
 	const [files, setFiles] = useState<any>([]);
 	const [url, setUrl] = useState("");
+	const [newDrinkRef, setNewDrinkRef] = useState(doc(collection(db, "drinks")));
 
 	const drinkNameRef = useRef<HTMLInputElement>(null);
 
@@ -19,7 +20,6 @@ const DrinkModal = ({ open, setOpen }: Props) => {
 		setLoading(true);
 		const drinkName = drinkNameRef.current?.value;
 		if (!url || !drinkName) return;
-		const newDrinkRef = doc(collection(db, "drinks"));
 		setLoading(true);
 		await setDoc(newDrinkRef, {
 			attributes: {
@@ -64,7 +64,7 @@ const DrinkModal = ({ open, setOpen }: Props) => {
 						<label className="label">
 							<span className="label-text">画像</span>
 						</label>
-						<UploadImage setUrl={setUrl} refPath="images" />
+						<UploadImage setUrl={setUrl} refPath="drinks" uid={newDrinkRef.id} />
 					</div>
 					<div className="form-control mt-4">
 						<input

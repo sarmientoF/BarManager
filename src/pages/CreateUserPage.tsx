@@ -6,9 +6,10 @@ import React, { useEffect, useRef, useState } from "react";
 import PrivateContainer from "../components/common/PrivateContainer";
 import { auth, database, db } from "../firebase";
 import jsonData from "../json/users.json";
-import jsonDrink from "../json/drinks.json";
+import jsonDrink_ from "../json/drinks.json";
+import jsonDrink from "../json/drinks2.json";
 import { doc, setDoc } from "@firebase/firestore";
-import { collection } from "firebase/firestore";
+import { addDoc, collection } from "firebase/firestore";
 const handleSaveToPC = (jsonData: any, name: string) => {
 	const fileData = JSON.stringify(jsonData);
 	const blob = new Blob([fileData], { type: "text/plain" });
@@ -66,22 +67,143 @@ const CreateUserPage = (props: Props) => {
 		handleSaveToPC(data, "drinks_");
 	};
 
-	const createNewUsers = async () => {
+	const testOrders = async () => {
+		let drinks = JSON.parse(JSON.stringify(jsonDrink));
 		let data = JSON.parse(JSON.stringify(jsonData));
-		let count = 0;
+
 		for await (const key of Object.keys(data)) {
 			let user = data[key];
-			const userCredential = await signInWithEmailAndPassword(
-				auth,
-				`test_${count}@gmail.com`,
-				"111111"
-			);
-			user.uid = userCredential.user.uid;
-			count += 1;
+			let orders: any = {};
+			user.orders.map((order: any) => {
+				orders[`${drinks[order.id].uid}`] = {
+					uid: drinks[order.id].uid,
+					drinkCode: order.store,
+				};
+			});
+			if (orders != {}) console.log("oders", orders);
 		}
-		handleSaveToPC(data, "users");
+
+		// let orders = {};
+		// data.orders.foreEach((order: any) => {
+		// 	console.log(order);
+	};
+	const createNewUsers = async () => {
+		let data = JSON.parse(JSON.stringify(jsonData));
+		let drinks = JSON.parse(JSON.stringify(jsonDrink));
+
+		let count = 0;
+		Object.keys(data).map(async (key) => {
+			let user = data[key];
+			let userCredential;
+			try {
+				userCredential = await signInWithEmailAndPassword(
+					auth,
+					user.email,
+					"111111"
+				);
+				console.log("regis");
+			} catch (error) {
+				userCredential = await createUserWithEmailAndPassword(
+					auth,
+					user.email,
+					"111111"
+				);
+				console.log("create");
+			}
+			console.log("uid", userCredential.user.uid);
+
+			user.uid = userCredential.user.uid;
+			const date = database.getCurrentTimestamp();
+
+			let orders: any = {};
+			user.orders.map(async (order: any) => {
+				console.log("order", drinks[order.id]);
+
+				try {
+					const orderRef = await addDoc(database.orders, {
+						updatedAt: database.getCurrentTimestamp(),
+						createdAt: database.getCurrentTimestamp(),
+						attributes: {
+							userId: user.uid,
+							drinkId: drinks[order.id].uid,
+							drinkCode: order.store,
+						},
+					});
+					console.log("orderRef", orderRef.id);
+
+					orders[orderRef.id] = {
+						drinkId: drinks[order.id].uid,
+						drinkCode: order.store,
+					};
+				} catch (error) {
+					console.log("error", error);
+				}
+			});
+
+			await setDoc(doc(database.users, user.uid), {
+				createdAt: date,
+				updatedAt: date,
+				attributes: {
+					isInStore: false,
+					name: user.name,
+					furigana: user.furigana,
+					job: user.job,
+					phone: user.phone,
+				},
+				relationships: {
+					orders,
+				},
+				uid: user.uid,
+			});
+			console.log("success", user.uid);
+		});
+		// for await (const key of Object.keys(data)) {
+		// 	let user = data[key];
+		// 	const userCredential = await createUserWithEmailAndPassword(
+		// 		auth,
+		// 		user.email,
+		// 		"111111"
+		// 	);
+		// 	user.uid = userCredential.user.uid;
+		// 	const date = database.getCurrentTimestamp();
+
+		// 	let orders: any = {};
+		// 	user.orders.map(async (order: any) => {
+		// 		const orderRef = await addDoc(database.orders, {
+		// 			updatedAt: database.getCurrentTimestamp(),
+		// 			createdAt: database.getCurrentTimestamp(),
+		// 			attributes: {
+		// 				userId: user.uid,
+		// 				drinkId: drinks[order.id].uid,
+		// 				drinkCode: order.store,
+		// 			},
+		// 		});
+		// 		orders[orderRef.id] = {
+		// 			drinkId: drinks[order.id].uid,
+		// 			drinkCode: order.store,
+		// 		};
+		// 	});
+
+		// 	await setDoc(doc(database.users, user.uid), {
+		// 		createdAt: date,
+		// 		updatedAt: date,
+		// 		attributes: {
+		// 			isInStore: false,
+		// 			name: user.name,
+		// 			furigana: user.furigana,
+		// 			job: user.job,
+		// 			phone: user.phone,
+		// 		},
+		// 		relationships: {
+		// 			orders,
+		// 		},
+		// 		uid: user.uid,
+		// 	});
+		// }
+		// handleSaveToPC(data, "users");
 	};
 	useEffect(() => {
+		// testOrders();
 		// createDrinks();
 		// createNewUsers();
 		// handleSaveToPC(data);

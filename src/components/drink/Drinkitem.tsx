@@ -3,9 +3,11 @@ import React, { useState } from "react";
 import { DrinkState } from "../../features/user/user-slice";
 
 import { BiEdit } from "react-icons/bi";
+import * as style from "@dicebear/avatars-initials-sprites";
 
 import UpdateDrinkModal from "../modals/UpdateDrinkModal";
 import DeleteDrinkModal from "../modals/DeleteDrinkModal";
+import { createAvatar } from "@dicebear/avatars";
 
 interface Props {
 	drink: DrinkState;
@@ -17,6 +19,13 @@ const DrinkItem = ({ drink }: Props) => {
 	const [open, setOpen] = useState(false);
 	const [del, setDel] = useState(false);
 
+	const photo =
+		drink.attributes.url ||
+		createAvatar(style, {
+			seed: drink.attributes.name,
+			dataUri: true,
+		});
+
 	return (
 		<>
 			<UpdateDrinkModal drink={drink} open={open} setOpen={setOpen} />
@@ -25,7 +34,7 @@ const DrinkItem = ({ drink }: Props) => {
 				<figure className="relative inline-flex shadow-2xl">
 					<div className="flex justify-around">
 						<img
-							src={drink.attributes.url || "https://picsum.photos/400/400"}
+							src={photo}
 							alt=""
 							className="object-cover w-full h-64"
 						/>

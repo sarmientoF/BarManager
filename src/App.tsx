@@ -21,6 +21,7 @@ import AllOrdersPage from "./pages/AllOrdersPage";
 import AddStaffPage from "./pages/AddStaffPage";
 import CreateUserPage from "./pages/CreateUserPage";
 import { AuthCotnext } from "./context/AuthContext";
+import ScreensPage from "./pages/ScreensPage";
 registerPlugin(
 	FilePondPluginImageExifOrientation,
 	FilePondPluginImagePreview,
@@ -53,6 +54,9 @@ function App() {
 				<OnlineUsersPage />
 			</PrivateRoute>
 
+			<PrivateRoute exact path="/screen">
+				<ScreensPage />
+			</PrivateRoute>
 			{isAdmin && (
 				<PrivateRoute exact path="/all">
 					<AllUsersPage />
@@ -72,9 +76,9 @@ function App() {
 				<AllOrdersPage />
 			</PrivateRoute>
 
-			<PrivateRoute exact path="/createUser">
+			<Route exact path="/createUser">
 				<CreateUserPage />
-			</PrivateRoute>
+			</Route>
 
 			<Route path="/signin">
 				<SignInPage />

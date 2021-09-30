@@ -8,7 +8,6 @@ import DatePicker, { registerLocale, setDefaultLocale } from "react-datepicker";
 import ja from "date-fns/locale/ja";
 import "react-datepicker/dist/react-datepicker.css";
 import { converJpNumbers, convertHalfString } from "../../utils/Half2Kana";
-// import "react-datepicker/dist/react-datepicker-cssmodules.css";
 
 registerLocale("ja", ja);
 interface Props {
@@ -185,7 +184,7 @@ const UpdateModal = ({ user, open, setOpen }: Props) => {
 							<label className="label">
 								<span className="label-text">画像</span>
 							</label>
-							<UploadImage setUrl={setUrl} refPath={`users/${uid}`} />
+							<UploadImage setUrl={setUrl} refPath="users" uid={uid} />
 						</div>
 					</div>
 

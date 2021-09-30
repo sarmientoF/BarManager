@@ -3,6 +3,7 @@ import { doc } from "firebase/firestore";
 import React, { useRef, useState } from "react";
 import { DrinkState, UserState } from "../../features/user/user-slice";
 import { database } from "../../firebase";
+import UploadImage from "../common/UploadImage";
 
 interface Props {
 	drink: DrinkState;
@@ -16,17 +17,21 @@ const UpdateDrinkModal = ({ drink, open, setOpen }: Props) => {
 	const nameRef = useRef<HTMLInputElement>(null);
 	const memoRef = useRef<HTMLInputElement>(null);
 
+	const [url, setUrl] = useState("");
+
 	const [loading, setLoading] = useState(false);
 
 	const handleUpdate = async () => {
 		const name = nameRef.current?.value || "";
 		const memo = memoRef.current?.value || "";
+		const newUrl = url || drink.attributes.url || "";
 
 		setLoading(true);
 		await updateDoc(doc(database.drinks, uid), {
 			updatedAt: database.getCurrentTimestamp(),
 			"attributes.name": name,
 			"attributes.memo": memo,
+			"attributes.url": newUrl
 		});
 		setLoading(false);
 		setOpen(false);
@@ -70,6 +75,13 @@ const UpdateDrinkModal = ({ drink, open, setOpen }: Props) => {
 							defaultValue={drink.attributes.memo}
 							ref={memoRef}
 						/>
+					</div>
+
+					<div className="form-control">
+						<label className="label">
+							<span className="label-text">画像</span>
+						</label>
+						<UploadImage setUrl={setUrl} refPath={`drinks`}  uid={uid}/>
 					</div>
 
 					<div className="form-control mt-6 flex-row justify-around space-x-1">

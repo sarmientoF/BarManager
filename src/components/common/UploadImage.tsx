@@ -7,10 +7,11 @@ import { ref, uploadBytesResumable } from "@firebase/storage";
 
 interface Props {
 	setUrl: (state: string) => void;
+	uid: string;
 	refPath: string;
 }
 
-const UploadImage = ({ setUrl, refPath }: Props) => {
+const UploadImage = ({ setUrl, uid, refPath }: Props) => {
 	const [files, setFiles] = useState<any>([]);
 
 	return (
@@ -26,11 +27,10 @@ const UploadImage = ({ setUrl, refPath }: Props) => {
 			maxFiles={1}
 			server={{
 				process: (fieldName, file, metadata, load, error, progress, abort) => {
-					const drinksImageRef = ref(storage, refPath);
-					const id = uuidv4();
+					const imageRef = ref(storage, refPath);
 
 					const uploadTask = uploadBytesResumable(
-						ref(drinksImageRef, id),
+						ref(imageRef, uid),
 						file,
 						metadata
 					);
@@ -45,7 +45,7 @@ const UploadImage = ({ setUrl, refPath }: Props) => {
 						},
 						() => {
 							getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-								load(id);
+								load(uid);
 								setUrl(downloadURL);
 							});
 						}

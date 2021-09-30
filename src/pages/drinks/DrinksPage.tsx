@@ -43,7 +43,7 @@ const DrinksPage = (props: Props) => {
 	}, []);
 	return (
 		<PrivateContainer>
-			<DrinkModal open={open} setOpen={setOpen} />
+			{open && <DrinkModal open={open} setOpen={setOpen} />}
 			<SearchModal path={"/drinks"} open={search} setOpen={setSearch} />
 			<div className="fixed bottom-4 right-4 z-10">
 				<button
