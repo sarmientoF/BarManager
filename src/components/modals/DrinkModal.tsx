@@ -31,7 +31,6 @@ const DrinkModal = ({ open, setOpen }: Props) => {
 			},
 			createdAt: date,
 			updatedAt: date,
-			uid: newDrinkRef,
 		});
 		setOpen(false);
 	};

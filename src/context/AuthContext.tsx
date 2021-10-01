@@ -17,7 +17,16 @@ import {
 } from "firebase/database";
 import React, { FC, useCallback, useContext, useEffect } from "react";
 import { useState } from "react";
-import { AllData, Bottle, MyUser, Order, Roles, StoreData } from "../data/data";
+import {
+	AllData,
+	Bottle,
+	MyBottle,
+	MyOrder,
+	MyUser,
+	Order,
+	Roles,
+	StoreData,
+} from "../data/data";
 
 import { auth, db, dbRef } from "../firebase";
 
@@ -25,10 +34,6 @@ const initialState = {
 	currentUser: null as User | null,
 	isAdmin: false,
 	data: { users: [], drinks: [], orders: [] } as StoreData,
-	// users: [] as User[],
-	// drinks: [] as Bottle[],
-	// orders: [] as Order[],
-	// online: [] as String[],
 	signInWithLink: {} as () => Promise<{
 		success: boolean;
 		message: string;
@@ -53,14 +58,21 @@ const actionCodeSettings = {
 
 interface Props {}
 
-const convertUser = (user: MyUser) => {
+const convertUser = (user: MyUser, uid: string) => {
 	return {
 		...user,
 		relationships: {
 			orders: user.relationships
-				? Object.values(user.relationships?.orders)
+				? Object.entries(user.relationships?.orders).map((data) => {
+						const [key, order] = data;
+						return {
+							...order,
+							orderId: key,
+						};
+				  })
 				: [],
 		},
+		uid,
 	};
 };
 export const AuthProvider: FC<Props> = (props) => {
@@ -102,7 +114,7 @@ export const AuthProvider: FC<Props> = (props) => {
 								uid: uid,
 							});
 						}
-
+						window.close();
 						return { success: true, message: "ログイン成功" };
 					} catch (e) {
 						return { success: false, message: "🚨 サーバーエラー" };
@@ -118,8 +130,12 @@ export const AuthProvider: FC<Props> = (props) => {
 	};
 
 	const sendSignInLink = async (email: string) => {
-		const userSnap = await get(child(dbRef, `roles/${email}`));
-		if (userSnap.exists()) {
+		// const userSnap = await get(child(dbRef, `roles/${email}`));
+		const roles = (await get(child(dbRef, `roles`))).val() as Roles;
+		console.log("roles", roles);
+
+		const userVal = Object.values(roles).find((rol) => rol.email == email);
+		if (userVal) {
 			try {
 				await sendSignInLinkToEmail(auth, email, actionCodeSettings);
 				return { message: "送信成功", success: true };
@@ -151,14 +167,26 @@ export const AuthProvider: FC<Props> = (props) => {
 			const admin = Object.values(data_.roles).find(
 				(role) => role.email == currentUser.email
 			);
-			// console.log("data", data_);
 			setisAdmin(admin != undefined ? admin.isAdmin : false);
 			setData({
-				users: Object.values(data_.users).map((user) => {
-					return convertUser(user);
+				users: Object.entries(data_.users).map((data) => {
+					const [key, user] = data;
+					return convertUser(user, key);
 				}),
-				drinks: Object.values(data_.bottles),
-				orders: Object.values(data_.orders),
+				drinks: Object.entries(data_.bottles).map((data) => {
+					const [key, drink] = data;
+					return {
+						...drink,
+						uid: key,
+					};
+				}),
+				orders: Object.entries(data_.orders).map((data) => {
+					const [key, order] = data;
+					return {
+						...order,
+						uid: key,
+					};
+				}),
 			});
 			// setisAdmin(true);
 
@@ -178,7 +206,10 @@ export const AuthProvider: FC<Props> = (props) => {
 					setData((oldData) => {
 						return {
 							...oldData,
-							users: [convertUser(newUser.val()), ...oldData.users],
+							users: [
+								convertUser(newUser.val(), newUser.key!),
+								...oldData.users,
+							],
 						};
 					});
 				}
@@ -192,7 +223,7 @@ export const AuthProvider: FC<Props> = (props) => {
 					const i = oldData.users.findIndex(
 						(user) => user.uid == changedUser.key
 					);
-					newData.users[i] = convertUser(changedUser.val());
+					newData.users[i] = convertUser(changedUser.val(), changedUser.key!);
 					return newData;
 				});
 			});
@@ -217,7 +248,10 @@ export const AuthProvider: FC<Props> = (props) => {
 					setData((oldData) => {
 						return {
 							...oldData,
-							drinks: [newDrink.val() as Bottle, ...oldData.drinks],
+							drinks: [
+								{ ...(newDrink.val() as MyBottle), uid: newDrink.key! },
+								...oldData.drinks,
+							],
 						};
 					});
 				}
@@ -256,7 +290,10 @@ export const AuthProvider: FC<Props> = (props) => {
 					setData((oldData) => {
 						return {
 							...oldData,
-							orders: [newOrder.val() as Order, ...oldData.orders],
+							orders: [
+								{ ...(newOrder.val() as MyOrder), uid: newOrder.key! },
+								...oldData.orders,
+							],
 						};
 					});
 				}

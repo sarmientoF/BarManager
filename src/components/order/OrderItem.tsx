@@ -21,11 +21,11 @@ function OrderItem({ order, filter }: Props): ReactElement {
 	const handleUse = async () => {
 		setLoading(true);
 		const orderRef = ref(db, `orders/${order.uid}`);
-		await update(orderRef, {
-			"attributes.inUse": order.attributes.inUse
-				? !order.attributes.inUse
-				: true,
-		});
+		let updates: any = {};
+		updates["attributes/inUse"] = order.attributes.inUse
+			? !order.attributes.inUse
+			: true;
+		await update(orderRef, updates);
 
 		setLoading(false);
 	};
@@ -63,7 +63,10 @@ function OrderItem({ order, filter }: Props): ReactElement {
 				open={open}
 				setOpen={setOpen}
 			/>
-			<li className="card bordered text-left bg-base-100 shadow-lg  col-span-1 rounded-lg  ">
+			<li
+				key={order.uid}
+				className="card bordered text-left bg-base-100 shadow-lg  col-span-1 rounded-lg  "
+			>
 				<div className="w-full flex items-center justify-between p-6 space-x-6">
 					<div className="flex-1 truncate">
 						<div className="flex items-center space-x-3">

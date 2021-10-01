@@ -19,7 +19,6 @@ interface Props {
 
 const TransformDate = (date: string) => {
 	const values = date.split("-");
-	console.log(`🚨${values[0]}年${values[1]}月${values[2]}日`);
 
 	return `${values[0]}年${values[1]}月${values[2]}日`;
 };
@@ -53,7 +52,6 @@ const UpdateModal = ({ user, open, setOpen }: Props) => {
 
 		const newUrl = url || user.attributes.photo || "";
 
-		console.log("name", convertHalfString(name));
 
 		setLoading(true);
 		await update(ref(db, `users/${uid}`), {

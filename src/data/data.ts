@@ -3,11 +3,16 @@ export interface Roles {
 }
 export interface AllData {
 	users: { [key: string]: MyUser };
-	orders: { [key: string]: Order };
-	bottles: { [key: string]: Bottle };
+	orders: { [key: string]: MyOrder };
+	bottles: { [key: string]: MyBottle };
 	roles: { [key: string]: { isAdmin: boolean; email: string } };
 }
 
+export interface MyBottle {
+	attributes: BottleAttributes;
+	updatedAt: string;
+	createdAt: string;
+}
 export interface Bottle {
 	attributes: BottleAttributes;
 	updatedAt: string;
@@ -21,6 +26,11 @@ export interface BottleAttributes {
 	memo: string;
 }
 
+export interface MyOrder {
+	attributes: OrderAttributes;
+	updatedAt: string;
+	createdAt: string;
+}
 export interface Order {
 	attributes: OrderAttributes;
 	updatedAt: string;
@@ -40,7 +50,6 @@ export interface MyUser {
 	relationships?: Relationships;
 	updatedAt: string;
 	createdAt: string;
-	uid: string;
 }
 export interface MyAdmin {
 	updatedAt: string;

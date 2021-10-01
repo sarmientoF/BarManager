@@ -94,6 +94,7 @@ const OnlineUserCard = ({
 					<ul className=" p-6 list-inside list-disc pt-2 border-t-2 border-base-300 flex-grow">
 						{user.relationships?.orders?.map((order) => {
 							const drink = drinks.find((drink) => drink.uid == order.drinkId);
+
 							return (
 								<li key={order.orderId} className="dropdown ">
 									{canDelete && (

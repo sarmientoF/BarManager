@@ -43,13 +43,11 @@ const AddOrderModal = ({ user, open, setOpen }: Props) => {
 					drinkId: drinkId,
 					drinkCode: drinkCode,
 				},
-				uid: order_uid,
 			});
 
 			await set(ref(db, `users/${uid}/relationships/orders/${order_uid}`), {
 				drinkCode: drinkCode,
 				drinkId: drinkId,
-				orderId: order_uid,
 			});
 		}
 

@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { BsSearch } from "react-icons/bs";
 import PrivateContainer from "../components/common/PrivateContainer";
+import SearchQRModal from "../components/modals/SearchQRModal";
 import SearchUserModal from "../components/modals/SearchUserModal";
 import OnlineUserCard from "../components/user/OnlineUserCard";
 import { AuthCotnext } from "../context/AuthContext";
@@ -25,6 +26,7 @@ const NewUsersPage = (props: Props) => {
 	let query = useQuery();
 
 	const filterName = query.get("value")?.toLowerCase();
+	const filterQR = query.get("qr");
 
 	if (filterName) {
 		newCustomers = newCustomers.filter((customer) => {
@@ -41,12 +43,14 @@ const NewUsersPage = (props: Props) => {
 			return isDrink || isAttribute;
 		});
 	}
-
+	if (filterQR) {
+		newCustomers = customers.filter((customer) => customer.uid == filterQR);
+	}
 	const [search, setSearch] = useState(false);
 
 	return (
 		<PrivateContainer>
-			<SearchUserModal path={"/new"} open={search} setOpen={setSearch} />
+			<SearchQRModal path={"/new"} open={search} setOpen={setSearch} />
 			<div className="fixed bottom-4 right-4 z-10">
 				<button
 					onClick={() => {
