@@ -3,25 +3,27 @@ import { createAvatar } from "@dicebear/avatars";
 import * as style from "@dicebear/avatars-initials-sprites";
 
 import UpdateModal from "../modals/UpdateModal";
-import { updateDoc } from "@firebase/firestore";
 import { db } from "../../firebase";
-import { doc } from "firebase/firestore";
+
 import AddOrderModal from "../modals/AddOrderModal";
 
 import DeleteOrderModal from "../modals/DeleteOrderModal";
 import { User } from "../../data/data";
 import { AuthCotnext } from "../../context/AuthContext";
 import { ref, update } from "firebase/database";
+import MigrateModal from "../modals/MigrateModal";
 
 interface Props {
 	user: User;
 	showLeave?: boolean;
+	showChange?: boolean;
 	canDelete?: boolean;
 }
 
 const OnlineUserCard = ({
 	user,
 	showLeave = false,
+	showChange = false,
 	canDelete = false,
 }: Props) => {
 	const {
@@ -39,6 +41,7 @@ const OnlineUserCard = ({
 
 	const [open, setOpen] = useState(false);
 	const [deleteOrder, setDeleteOrder] = useState(false);
+	const [migrate, setMigrate] = useState(false);
 	const [loading, setLoading] = useState(false);
 	const [order, setOrder] = useState(false);
 
@@ -63,12 +66,19 @@ const OnlineUserCard = ({
 		updates["attributes/isInStore"] = false;
 		await update(ref(db, `users/${uid}`), updates);
 	};
+
+	const handleMigrate = () => {
+		setMigrate(true);
+		// await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+	};
 	return (
 		<>
 			{order && <AddOrderModal user={user} open={order} setOpen={setOrder} />}
 
 			{open && <UpdateModal user={user} open={open} setOpen={setOpen} />}
-
+			{migrate && (
+				<MigrateModal user={user} open={migrate} setOpen={setMigrate} />
+			)}
 			<li className="card bordered text-left bg-base-100 shadow-lg  col-span-1 rounded-lg overflow-visible  max-w-xl w-full ">
 				<div className="w-full flex items-center justify-between p-6 space-x-6">
 					<div className="flex-1 truncate">
@@ -129,7 +139,7 @@ const OnlineUserCard = ({
 				) : (
 					<div className="flex-grow border-t-2 border-base-300 place-content-center flex flex-col">
 						<div className="text-center p-4 text-base-content text-opacity-50 font-semibold">
-							キープない
+							キープ登録なし
 						</div>
 					</div>
 				)}
@@ -151,7 +161,16 @@ const OnlineUserCard = ({
 								キープ登録
 							</a>
 						</div>
-
+						{user.attributes.mig == false && (
+							<div className="w-0 flex-1 flex">
+								<a
+									onClick={handleMigrate}
+									className="btn btn-ghost btn-block h-full text-lg "
+								>
+									メール変更
+								</a>
+							</div>
+						)}
 						{showLeave && (
 							<div onClick={handleInStore} className="-ml-px flex-1 flex">
 								<a className="btn btn-ghost btn-block  h-full  text-lg">退店</a>

@@ -59,6 +59,7 @@ export interface MyAdmin {
 
 export interface UserAttributes {
 	email: string;
+	mig?: boolean;
 	name: string;
 	furigana: string;
 	job: string;

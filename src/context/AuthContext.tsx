@@ -34,7 +34,7 @@ const initialState = {
 	currentUser: null as User | null,
 	isAdmin: false,
 	data: { users: [], drinks: [], orders: [] } as StoreData,
-	signInWithLink: {} as () => Promise<{
+	signInWithLink: {} as (email: string | null) => Promise<{
 		success: boolean;
 		message: string;
 	}>,
@@ -50,9 +50,9 @@ export const useAuth = () => {
 	return useContext(AuthCotnext);
 };
 
-const actionCodeSettings = {
-	url: "http://localhost:3000/verify_signin",
-	// url: "https://admin-barmanagerx.web.app/verify_signin",
+export const actionCodeSettings = {
+	// url: "http://localhost:3000/verify_signin",
+	url: "https://admin-barmanagerx.web.app/verify_signin",
 	handleCodeInApp: true,
 };
 
@@ -80,19 +80,9 @@ export const AuthProvider: FC<Props> = (props) => {
 	const [loading, setLoading] = useState(true);
 	const [isAdmin, setisAdmin] = useState(initialState.isAdmin);
 	const [data, setData] = useState<StoreData>(initialState.data);
-	console.log(
-		"Data changed",
-		data.users.length,
-		data.drinks.length,
-		data.orders.length
-	);
 
-	const signInWithLink = async () => {
+	const signInWithLink = async (email: string | null) => {
 		if (isSignInWithEmailLink(auth, window.location.href)) {
-			let email = window.localStorage.getItem("emailForSignIn");
-			if (!email) {
-				email = window.prompt("Please provide your email for confirmation");
-			}
 			if (!email) return { success: false, message: "🚨 メールが有効でない" };
 			try {
 				const roles = (await (await get(child(dbRef, `roles`))).val()) as Roles;
@@ -137,7 +127,10 @@ export const AuthProvider: FC<Props> = (props) => {
 		const userVal = Object.values(roles).find((rol) => rol.email == email);
 		if (userVal) {
 			try {
-				await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+				await sendSignInLinkToEmail(auth, email, {
+					url: `https://admin-barmanagerx.web.app/verify_signin?email=${email}`,
+					handleCodeInApp: true,
+				});
 				return { message: "送信成功", success: true };
 			} catch (error) {
 				return { message: "メールが送れない", success: false };
@@ -150,6 +143,10 @@ export const AuthProvider: FC<Props> = (props) => {
 		return auth.signOut();
 	};
 	useEffect(() => {
+		window.onbeforeunload = function () {
+			return false;
+		};
+
 		const unsubscribe = auth.onAuthStateChanged((user) => {
 			console.log("changed user");
 
@@ -264,7 +261,7 @@ export const AuthProvider: FC<Props> = (props) => {
 					const i = oldData.drinks.findIndex(
 						(drink) => drink.uid == changedDrink.key
 					);
-					newData.drinks[i] = changedDrink.val();
+					newData.drinks[i] = { ...changedDrink.val(), uid: changedDrink.key };
 
 					return newData;
 				});
@@ -307,7 +304,7 @@ export const AuthProvider: FC<Props> = (props) => {
 					const i = oldData.orders.findIndex(
 						(order) => order.uid == changedOrder.key
 					);
-					newData.orders[i] = changedOrder.val();
+					newData.orders[i] = { ...changedOrder.val(), uid: changedOrder.key };
 					return newData;
 				});
 			});

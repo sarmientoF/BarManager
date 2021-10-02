@@ -47,9 +47,11 @@ const AllOrdersPage = (props: Props) => {
 			<div className="hero min-h-screen bg-base-200">
 				<div className="text-center w-full p-4">
 					<div className="grid grid-cols-fill2 gap-4 place-content-center">
-						{orders.slice((page - 1) * n, page * n).map((order) => (
-							<OrderItem key={order.uid} filter={filterName} order={order} />
-						))}
+						{orders.slice((page - 1) * n, page * n).map((order) => {
+							return (
+								<OrderItem key={order.uid} filter={filterName} order={order} />
+							);
+						})}
 					</div>
 					<div className="btn-group w-full flex justify-center pt-8">
 						<button

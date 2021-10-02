@@ -62,7 +62,7 @@ const AllUsersPage = (props: Props) => {
 				<div className="text-center w-full p-4">
 					<div className="grid grid-cols-1 gap-2  justify-items-center ">
 						{customers.slice((page - 1) * n, page * n).map((customer) => (
-							<OnlineUserCard key={customer.uid} user={customer} />
+							<OnlineUserCard key={customer.uid} user={customer}  showChange={true}/>
 						))}
 					</div>
 					<div className="btn-group w-full flex justify-center pt-8">

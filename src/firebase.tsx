@@ -24,5 +24,4 @@ onDisconnect(presenceRef).set("I disconnected!");
 export const dbRef = ref(db);
 export const storage = getStorage(app);
 export const auth = getAuth();
-
 export default app;

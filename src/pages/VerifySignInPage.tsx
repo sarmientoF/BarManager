@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { VscLoading } from "react-icons/vsc";
 import { useHistory } from "react-router";
 import { useAuth } from "../context/AuthContext";
+import { useQuery } from "./drinks/DrinksPage";
 interface Props {}
 
 const VerifySignInPage = (props: Props) => {
@@ -12,8 +13,11 @@ const VerifySignInPage = (props: Props) => {
 	}>({ message: "" });
 	const history = useHistory();
 
+	const query = useQuery();
+	const email = query.get("email");
+
 	const handleSignIn = async () => {
-		const res = await signInWithLink();
+		const res = await signInWithLink(email);
 		setMessage(res);
 		if (res.success) history.push("/");
 	};

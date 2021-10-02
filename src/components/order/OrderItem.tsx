@@ -94,23 +94,6 @@ function OrderItem({ order, filter }: Props): ReactElement {
 
 				<div>
 					<div className="-mt-px flex divide-x-2 divide-base-300 border-t-2 border-base-300">
-						<div className="-ml-px w-0 flex-1 flex">
-							{order.attributes.inUse ? (
-								<a
-									onClick={handleUse}
-									className="btn btn-ghost btn-block h-full text-lg px-0 sm:px-4"
-								>
-									使用しない
-								</a>
-							) : (
-								<a
-									onClick={handleUse}
-									className="btn btn-ghost btn-block h-full text-lg px-0 sm:px-4"
-								>
-									使用する
-								</a>
-							)}
-						</div>
 						<div className="w-0 flex-1 flex">
 							<a
 								onClick={handleRemove}

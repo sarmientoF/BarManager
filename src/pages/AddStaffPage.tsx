@@ -99,7 +99,7 @@ const AddStaffPage = (props: Props) => {
 							</div>
 							<div className="form-control">
 								<label className="label">
-									<span className="label-text">銘柄名</span>
+									<span className="label-text">タイプ</span>
 								</label>
 
 								<select
