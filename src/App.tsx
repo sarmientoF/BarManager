@@ -19,7 +19,6 @@ import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 import AllOrdersPage from "./pages/AllOrdersPage";
 import AddStaffPage from "./pages/AddStaffPage";
 import { AuthCotnext } from "./context/AuthContext";
-import ScreensPage from "./pages/ScreensPage";
 registerPlugin(
 	FilePondPluginImageExifOrientation,
 	FilePondPluginImagePreview,

@@ -4,6 +4,7 @@ import { AuthCotnext } from "../../context/AuthContext";
 import { User } from "../../data/data";
 import { db } from "../../firebase";
 import { v4 as uuid } from "uuid";
+import { converJpNumbers } from "../../utils/Half2Kana";
 interface Props {
 	user: User;
 	open: boolean;
@@ -12,25 +13,20 @@ interface Props {
 
 const AddOrderModal = ({ user, open, setOpen }: Props) => {
 	const uid = user.uid;
+	const {
+		data: { drinks, orders },
+	} = useContext(AuthCotnext);
 
 	const drinkRef = useRef<HTMLSelectElement>(null);
 
 	const [loading, setLoading] = useState(false);
 	const [drinkCode, setDrinkCode] = useState("");
-
+	const [drinkId, setDrinkId] = useState(drinks[0].uid);
 	const [error, setError] = useState("");
-
-	const {
-		data: { drinks, orders },
-	} = useContext(AuthCotnext);
-
-	const ordersIDs = orders.map((order) => order.attributes.drinkCode);
 
 	const handleUpdate = async (e: FormEvent) => {
 		e.preventDefault();
 		setLoading(true);
-
-		const drinkId = drinkRef.current?.value;
 
 		if (drinkId && drinkCode) {
 			const date = new Date().toISOString();
@@ -59,6 +55,20 @@ const AddOrderModal = ({ user, open, setOpen }: Props) => {
 		setOpen(false);
 	};
 
+	const check = (drinkCode: string, drinkId: string) => {
+		const orders_at = orders.filter(
+			(order) => order.attributes.drinkCode == converJpNumbers(drinkCode)
+		);
+		if (orders_at.some((order) => order.attributes.drinkId == drinkId)) {
+			setError(
+				`すでにこのボトル番号に${
+					drinks.find((e) => e.uid == drinkId)?.attributes.name
+				}があります`
+			);
+		} else {
+			setError("");
+		}
+	};
 	return (
 		<div className={`modal ${open && "modal-open"} transition-all`}>
 			<span
@@ -89,11 +99,7 @@ const AddOrderModal = ({ user, open, setOpen }: Props) => {
 							value={drinkCode}
 							onChange={(val) => {
 								setDrinkCode(val.currentTarget.value);
-								if (ordersIDs.some((id) => id == val.currentTarget.value)) {
-									setError("すでにこのボトル番号は使用されています");
-								} else {
-									setError("");
-								}
+								check(val.currentTarget.value, drinkId);
 							}}
 						/>
 					</div>
@@ -105,7 +111,12 @@ const AddOrderModal = ({ user, open, setOpen }: Props) => {
 						<select
 							required
 							className="select select-bordered w-full"
-							ref={drinkRef}
+							// ref={drinkRef}
+							value={drinkId}
+							onChange={(val) => {
+								setDrinkId(val.currentTarget.value);
+								check(drinkCode, val.currentTarget.value);
+							}}
 							// defaultValue="0"
 						>
 							<option value="0" disabled={true}>
