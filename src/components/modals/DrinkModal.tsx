@@ -24,7 +24,7 @@ const DrinkModal = ({ open, setOpen }: Props) => {
 		if (!url || !drinkName) return;
 		const date = new Date().toISOString();
 		setLoading(true);
-		await set(ref(db, `drinks/${newDrinkRef}`), {
+		await set(ref(db, `bottles/${newDrinkRef}`), {
 			attributes: {
 				name: drinkName,
 				url: url,
