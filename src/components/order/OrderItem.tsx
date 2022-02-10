@@ -6,7 +6,7 @@ import DeleteOrderModal from "../modals/DeleteOrderModal";
 import { db } from "../../firebase";
 import { Order } from "../../data/data";
 import { ref, update } from "firebase/database";
-import { AuthCotnext } from "../../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 interface Props {
 	order: Order;
 	filter: string;
@@ -14,9 +14,12 @@ interface Props {
 
 function OrderItem({ order, filter }: Props): ReactElement {
 	const [open, setOpen] = useState(false);
+	const [tab, setTab] = useState(0);
+
 	const handleRemove = async () => {
 		setOpen(true);
 	};
+
 	const [loading, setLoading] = useState(false);
 	const handleUse = async () => {
 		setLoading(true);
@@ -31,24 +34,28 @@ function OrderItem({ order, filter }: Props): ReactElement {
 	};
 	const {
 		data: { drinks, users: customers },
-	} = useContext(AuthCotnext);
+	} = useContext(AuthContext);
 	const drink = drinks.find((drink) => drink.uid == order.attributes.drinkId);
 
-	const customer = customers.find(
-		(customer) => customer.uid == order.attributes.userId
+	const owners = customers.filter((customer) =>
+		customer.relationships.orders.some((ord) => ord.orderId == order.uid)
 	);
 
 	let photo =
-		customer?.attributes.photo ||
+		owners[tab].attributes.photo ||
 		createAvatar(style, {
-			seed: customer!.attributes.name,
+			seed: owners[tab].attributes.name,
 			dataUri: true,
 		});
 
 	if (filter) {
 		if (
-			!customer?.attributes.name.toLowerCase().includes(filter) &&
-			!customer?.attributes.furigana.includes(filter) &&
+			!owners.some((customer) =>
+				customer?.attributes.name.toLowerCase().includes(filter)
+			) &&
+			!owners.some((customer) =>
+				customer?.attributes.furigana.includes(filter)
+			) &&
 			!order.attributes.drinkCode.includes(filter) &&
 			!drink?.attributes.name.includes(filter)
 		) {
@@ -63,19 +70,31 @@ function OrderItem({ order, filter }: Props): ReactElement {
 				open={open}
 				setOpen={setOpen}
 			/>
+
 			<li
 				key={order.uid}
 				className="card bordered text-left bg-base-100 shadow-lg  col-span-1 rounded-lg  "
 			>
+				<div className="tabs min-w-max justify-center">
+					{owners.map((owner, idx) => (
+						<a
+							className={`tab tab-bordered ${tab == idx && "tab-active"}`}
+							onClick={() => setTab(idx)}
+						>
+							Tab {idx}
+						</a>
+					))}
+				</div>
+
 				<div className="w-full flex items-center justify-between p-6 space-x-6">
 					<div className="flex-1 truncate">
 						<div className="flex items-center space-x-3">
 							<h3 className="text-2xl font-medium truncate">
-								{customer?.attributes.name}
+								{owners[tab].attributes.name}
 							</h3>
 						</div>
 						<p className="mt-1 text-base truncate text-base-content text-opacity-60">
-							{customer?.attributes.furigana}
+							{owners[tab].attributes.furigana}
 						</p>
 						<p className="mt-1 text-2xl truncate text-base-content text-opacity-60">
 							{drink?.attributes.name}
@@ -93,6 +112,7 @@ function OrderItem({ order, filter }: Props): ReactElement {
 				</div>
 
 				<div>
+					{/* <div className="flex-0 flex flex-col space-y-2"> */}
 					<div className="-mt-px flex divide-x-2 divide-base-300 border-t-2 border-base-300">
 						<div className="w-0 flex-1 flex">
 							<a

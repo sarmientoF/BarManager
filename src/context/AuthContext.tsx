@@ -44,10 +44,10 @@ const initialState = {
 	}>,
 	logout: {} as () => Promise<void>,
 };
-export const AuthCotnext = React.createContext(initialState);
+export const AuthContext = React.createContext(initialState);
 
 export const useAuth = () => {
-	return useContext(AuthCotnext);
+	return useContext(AuthContext);
 };
 
 export const actionCodeSettings = {
@@ -128,6 +128,7 @@ export const AuthProvider: FC<Props> = (props) => {
 		if (userVal) {
 			try {
 				await sendSignInLinkToEmail(auth, email, {
+					// url: `http://localhost:3000/verify_signin?email=${email}`,
 					url: `https://admin-barmanagerx.web.app/verify_signin?email=${email}`,
 					handleCodeInApp: true,
 				});
@@ -334,8 +335,8 @@ export const AuthProvider: FC<Props> = (props) => {
 		logout,
 	};
 	return (
-		<AuthCotnext.Provider value={context}>
+		<AuthContext.Provider value={context}>
 			{!loading && props.children}
-		</AuthCotnext.Provider>
+		</AuthContext.Provider>
 	);
 };

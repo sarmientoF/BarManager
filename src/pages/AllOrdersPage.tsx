@@ -4,7 +4,7 @@ import SearchDrinkModal from "../components/modals/SearchDrinkModal";
 import { useQuery } from "./drinks/DrinksPage";
 import { BsSearch } from "react-icons/bs";
 import OrderItem from "../components/order/OrderItem";
-import { AuthCotnext } from "../context/AuthContext";
+import { AuthContext } from "../context/AuthContext";
 
 interface Props {}
 
@@ -17,7 +17,7 @@ const AllOrdersPage = (props: Props) => {
 
 	let {
 		data: { orders },
-	} = useContext(AuthCotnext);
+	} = useContext(AuthContext);
 
 	let pages = Math.ceil(orders.length / n);
 	if (filterName) {

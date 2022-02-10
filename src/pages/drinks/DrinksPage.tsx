@@ -6,7 +6,7 @@ import DrinkItem from "../../components/drink/Drinkitem";
 import { BsSearch } from "react-icons/bs";
 import SearchModal from "../../components/modals/SearchDrinkModal";
 import { useLocation } from "react-router";
-import { AuthCotnext } from "../../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 
 export function useQuery() {
 	return new URLSearchParams(useLocation().search);
@@ -19,7 +19,7 @@ const DrinksPage = (props: Props) => {
 	const filterName = query.get("value");
 	let {
 		data: { drinks },
-	} = useContext(AuthCotnext);
+	} = useContext(AuthContext);
 
 	if (filterName) {
 		drinks = drinks.filter((drink) =>

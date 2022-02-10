@@ -18,7 +18,7 @@ import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 import AllOrdersPage from "./pages/AllOrdersPage";
 import AddStaffPage from "./pages/AddStaffPage";
-import { AuthCotnext } from "./context/AuthContext";
+import { AuthContext } from "./context/AuthContext";
 registerPlugin(
 	FilePondPluginImageExifOrientation,
 	FilePondPluginImagePreview,
@@ -26,7 +26,7 @@ registerPlugin(
 );
 
 function App() {
-	const { isAdmin } = useContext(AuthCotnext);
+	const { isAdmin } = useContext(AuthContext);
 
 	return (
 		<Switch>

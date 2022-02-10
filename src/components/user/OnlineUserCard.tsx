@@ -9,7 +9,7 @@ import AddOrderModal from "../modals/AddOrderModal";
 
 import DeleteOrderModal from "../modals/DeleteOrderModal";
 import { User } from "../../data/data";
-import { AuthCotnext } from "../../context/AuthContext";
+import { AuthContext } from "../../context/AuthContext";
 import { ref, update } from "firebase/database";
 import MigrateModal from "../modals/MigrateModal";
 
@@ -28,7 +28,7 @@ const OnlineUserCard = ({
 }: Props) => {
 	const {
 		data: { drinks },
-	} = useContext(AuthCotnext);
+	} = useContext(AuthContext);
 
 	const uid = user.uid;
 

@@ -24,11 +24,12 @@ const SearchQRModal = ({ path, open, setOpen }: Props) => {
 
 	const handleOnScan = async (data: string | null) => {
 		if (data) {
-			const date = new Date().toISOString()
-			await update(ref(db, `users/${data}`), {
-				updatedAt: date,
-				"attributes.isInStore": true,
-			});
+			// console.log("Data", data);
+
+			let updates: any = {};
+			updates["updatedAt"] = new Date().toISOString();
+			updates["attributes/isInStore"] = true;
+			await update(ref(db, `users/${data}`), updates);
 			history.push(`${path}?qr=${data}`);
 			handleClose();
 		}

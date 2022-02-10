@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
-import { AuthCotnext, AuthProvider } from "../context/AuthContext";
+import { AuthContext, AuthProvider } from "../context/AuthContext";
 import { my_paths } from "./common/MyNavigationBar";
 
 function classNames(...classes: string[]) {
@@ -8,7 +8,7 @@ function classNames(...classes: string[]) {
 }
 
 export default function GuideItems() {
-	const { isAdmin } = useContext(AuthCotnext);
+	const { isAdmin } = useContext(AuthContext);
 	const paths = !isAdmin ? my_paths.slice(1, -1) : my_paths;
 
 	return (

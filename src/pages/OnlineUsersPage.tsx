@@ -3,7 +3,7 @@ import { BsSearch } from "react-icons/bs";
 import PrivateContainer from "../components/common/PrivateContainer";
 import SearchQRModal from "../components/modals/SearchQRModal";
 import OnlineUserCard from "../components/user/OnlineUserCard";
-import { AuthCotnext } from "../context/AuthContext";
+import { AuthContext } from "../context/AuthContext";
 import { useQuery } from "./drinks/DrinksPage";
 
 interface Props {}
@@ -11,7 +11,7 @@ interface Props {}
 const OnlineUsersPage = (props: Props) => {
 	const {
 		data: { users: customers },
-	} = useContext(AuthCotnext);
+	} = useContext(AuthContext);
 
 	let onlineCustomers = customers.filter(
 		(customer) => customer.attributes.isInStore

@@ -1,6 +1,6 @@
 import { ref, set, update } from "firebase/database";
 import React, { FormEvent, useContext, useRef, useState } from "react";
-import { actionCodeSettings, AuthCotnext } from "../../context/AuthContext";
+import { actionCodeSettings, AuthContext } from "../../context/AuthContext";
 import { User } from "../../data/data";
 import { auth, db } from "../../firebase";
 import { v4 as uuid } from "uuid";

@@ -5,7 +5,7 @@ import { useQuery } from "./drinks/DrinksPage";
 import { BsSearch } from "react-icons/bs";
 import SearchQRModal from "../components/modals/SearchQRModal";
 import OnlineUserCard from "../components/user/OnlineUserCard";
-import { AuthCotnext } from "../context/AuthContext";
+import { AuthContext } from "../context/AuthContext";
 
 interface Props {}
 
@@ -18,7 +18,7 @@ const AllUsersPage = (props: Props) => {
 
 	let {
 		data: { users: customers },
-	} = useContext(AuthCotnext);
+	} = useContext(AuthContext);
 
 	if (filterName) {
 		customers = customers.filter((customer) => {

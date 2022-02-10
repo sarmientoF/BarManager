@@ -4,7 +4,7 @@ import PrivateContainer from "../components/common/PrivateContainer";
 import SearchQRModal from "../components/modals/SearchQRModal";
 import SearchUserModal from "../components/modals/SearchUserModal";
 import OnlineUserCard from "../components/user/OnlineUserCard";
-import { AuthCotnext } from "../context/AuthContext";
+import { AuthContext } from "../context/AuthContext";
 import { MyUser, User } from "../data/data";
 import { useQuery } from "./drinks/DrinksPage";
 interface Props {}
@@ -18,7 +18,7 @@ const isNewUser = (user: User) => {
 const NewUsersPage = (props: Props) => {
 	const {
 		data: { users: customers },
-	} = useContext(AuthCotnext);
+	} = useContext(AuthContext);
 	let newCustomers = customers.filter((customer) => {
 		return isNewUser(customer);
 	});

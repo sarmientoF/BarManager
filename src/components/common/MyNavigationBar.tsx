@@ -2,7 +2,7 @@ import React, { FC, useContext } from "react";
 import { FiMenu } from "react-icons/fi";
 import { MdAccountCircle } from "react-icons/md";
 import { Link, useLocation } from "react-router-dom";
-import { AuthCotnext, useAuth } from "../../context/AuthContext";
+import { AuthContext, useAuth } from "../../context/AuthContext";
 
 export const my_paths = [
 	{
@@ -64,7 +64,7 @@ const MyNavigationBar: FC<Props> = (props) => {
 	};
 	const location = useLocation();
 
-	const { isAdmin } = useContext(AuthCotnext);
+	const { isAdmin } = useContext(AuthContext);
 
 	const paths = !isAdmin ? my_paths.slice(1, -1) : my_paths;
 
