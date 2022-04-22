@@ -1,13 +1,13 @@
 {
-	"hosting": {
-		"site": "admin-barmanagerx",
-		"public": "dist",
-		"ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-		"rewrites": [
-			{
-				"source": "**",
-				"destination": "/index.html"
-			}
-		]
-	}
+  "hosting": {
+    "site": "admin-barmanagerx",
+    "public": "dist",
+    "ignore": ["firebase.json", "**/.*", "python/**", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
 }
