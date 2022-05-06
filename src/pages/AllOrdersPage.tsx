@@ -18,7 +18,16 @@ const AllOrdersPage = (props: Props) => {
 	let {
 		data: { orders },
 	} = useContext(AuthContext);
-
+	// Sort the orders by drinkCode
+	orders = orders.sort((a, b) => {
+		if (parseInt(a.attributes.drinkCode) < parseInt(b.attributes.drinkCode)) {
+			return -1;
+		}
+		if (parseInt(a.attributes.drinkCode) > parseInt(b.attributes.drinkCode)) {
+			return 1;
+		}
+		return 0;
+	});
 	let pages = Math.ceil(orders.length / n);
 	if (filterName) {
 		pages = 1;

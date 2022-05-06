@@ -94,11 +94,14 @@ const OnlineUserCard = ({
               {user.attributes.job}
             </p>
           </div>
-          <img
-            className="w-16 h-16 bg-gray-300 rounded-md flex-shrink-0 object-cover shadow-lg"
-            src={photo}
-            alt=""
-          />
+          <div className="flex flex-col text-center items-center">
+            <img
+              className="w-16 h-16 bg-gray-300 rounded-md flex-shrink-0 object-cover shadow-lg"
+              src={photo}
+              alt=""
+            />
+            <h1 className="text-xs">顧客番号: {user.attributes.customerNumber}</h1>
+          </div>
         </div>
         {user.relationships?.orders?.length != 0 ? (
           <ul className=" p-6 list-inside list-disc pt-2 border-t-2 border-base-300 flex-grow">
