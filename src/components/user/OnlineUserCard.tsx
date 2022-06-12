@@ -100,7 +100,10 @@ const OnlineUserCard = ({
               src={photo}
               alt=""
             />
-            <h1 className="text-xs">顧客番号: {user.attributes.customerNumber}</h1>
+            <h1 className="text-xs pt-1">
+              顧客番号: {user.attributes.customerNumber}
+            </h1>
+            {/* <h1 className="text-xs">顧客番号: {user.uid}</h1> */}
           </div>
         </div>
         {user.relationships?.orders?.length != 0 ? (
@@ -112,7 +115,8 @@ const OnlineUserCard = ({
                 <li key={order.orderId} className="dropdown ">
                   {canDelete && (
                     <DeleteOrderModal
-                      order={{ uid: order.orderId, userId: user.uid }}
+                      userId={user.uid}
+                      order={{ uid: order.orderId }}
                       open={deleteOrder}
                       setOpen={setDeleteOrder}
                     />

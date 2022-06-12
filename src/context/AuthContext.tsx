@@ -288,7 +288,7 @@ export const AuthProvider: FC<Props> = (props) => {
       onChildAdded(
         query(ordersRef, orderByChild("createdAt"), startAt(now)),
         (newOrder) => {
-          console.log("order added");
+          console.log("order added", newOrder);
 
           setData((oldData) => {
             return {

@@ -3,40 +3,26 @@ import { db } from "../../firebase";
 import { v4 as uuid } from "uuid";
 import { ref, remove, set, update } from "firebase/database";
 import { AuthContext } from "../../context/AuthContext";
+import { Link } from "react-router-dom";
 
 interface Props {
-  userId: string;
-  order: { uid: string };
+  drinkId: string;
   open: boolean;
   setOpen: (state: boolean) => void;
 }
 
-const DeleteOrderModal = ({ userId, order, open, setOpen }: Props) => {
+const DeleteDrinkModal = ({ drinkId, open, setOpen }: Props) => {
   const [loading, setLoading] = useState(false);
   const {
     data: { users: customers },
   } = useContext(AuthContext);
   const owners = customers.filter((customer) =>
-    customer.relationships.orders.some((ord) => ord.orderId == order.uid)
+    customer.relationships.orders.some((ord) => ord.drinkId == drinkId)
   );
   const handleDelete_Order = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    await remove(ref(db, `orders/${order.uid}`));
-
-    for await (const owner of owners) {
-      remove(ref(db, `users/${owner.uid}/relationships/orders/${order.uid}`));
-    }
-    setLoading(false);
-    setOpen(false);
-  };
-  const handleDelete_Client = async (e: FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    if (owners.length == 1) {
-      await remove(ref(db, `orders/${order.uid}`));
-    }
-    await remove(ref(db, `users/${userId}/relationships/orders/${order.uid}`));
+    await remove(ref(db, `bottles/${drinkId}`));
     setLoading(false);
     setOpen(false);
   };
@@ -53,25 +39,29 @@ const DeleteOrderModal = ({ userId, order, open, setOpen }: Props) => {
           setOpen(false);
         }}
       ></span>
-
       <div className="modal-box">
+        {/* <p className="">Hola</p> */}
+        {owners.length > 1 && (
+          <div className="card-title">ボトルを削除出来ない</div>
+        )}
+
         <div className="card-body">
-          <div className="form-control mt-6">
-            <input
-              type="button"
-              value="注文を削除する"
-              className="btn btn-error text-white"
-              onClick={handleDelete_Order}
-              disabled={loading}
-            />
+          <div className="pt-2 flex flex-col align-middle justify-center items-center text-left max-h-44 overflow-scroll">
+            {owners.map((owner) => (
+              <div key={owner.uid}>
+                <Link to={`all?qr=${owner.uid}`} className="focus:outline-none">
+                  <p className="link ">{owner.attributes.name}</p>
+                </Link>
+              </div>
+            ))}
           </div>
           <div className="form-control mt-6">
             <input
               type="button"
-              value="お客様を削除する"
-              className="btn btn-info text-white"
-              onClick={handleDelete_Client}
-              disabled={loading}
+              value="ボトルを削除する"
+              className="btn btn-error text-white"
+              onClick={handleDelete_Order}
+              disabled={loading || owners.length > 1}
             />
           </div>
           <div className="form-control mt-6">
@@ -89,4 +79,4 @@ const DeleteOrderModal = ({ userId, order, open, setOpen }: Props) => {
   );
 };
 
-export default DeleteOrderModal;
+export default DeleteDrinkModal;
