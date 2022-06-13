@@ -180,13 +180,13 @@ const AddOrderModal = ({ user, open, setOpen }: Props) => {
           </form>
         ) : (
           <form className="card-body" onSubmit={handleUpdate2}>
-            {error && (
+            {/* {error && (
               <div className="alert alert-error">
                 <div className="flex-1">
                   <label>{error}</label>
                 </div>
               </div>
-            )}
+            )} */}
             <div className="form-control">
               <label className="cursor-pointer label">
                 <span className="label-text">既存のボトルに顧客を登録する</span>
